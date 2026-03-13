@@ -836,6 +836,12 @@ function renderWaitingPlayers() {
   list.innerHTML = Object.values(gameState.players).map(p =>
     `<li><span class="player-dot" style="background:${p.color}"></span><span>${p.name}${p.id === myId ? ' (vous)' : ''}</span>${!p.connected ? ' <span style="color:#888;font-size:0.7rem">hors ligne</span>' : ''}</li>`
   ).join('');
+
+  const startBtn = document.getElementById('startBtn');
+  if (startBtn) {
+    const count = Object.values(gameState.players).filter(p => p.connected).length;
+    startBtn.disabled = count < 2;
+  }
 }
 
 function renderMap() {
