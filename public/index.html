@@ -825,6 +825,7 @@ function renderState() {
   const startBtn = document.getElementById('startBtn');
   if (startBtn) {
     const count = Object.keys(gameState.players || {}).length;
+    console.log('Joueurs:', count, gameState.players);
     startBtn.disabled = count < 2;
   }
 }
