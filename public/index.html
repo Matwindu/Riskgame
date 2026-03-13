@@ -825,7 +825,7 @@ function renderState() {
   const startBtn = document.getElementById('startBtn');
   if (startBtn) {
     const count = Object.keys(gameState.players || {}).length;
-    startBtn.disabled = !isCreator || count < 2;
+    startBtn.disabled = count < 2;
   }
 }
 
