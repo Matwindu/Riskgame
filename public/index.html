@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚔️ STRATEGOS — Jeu de conquête mondiale</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d12;
+    --surface: #13131e;
+    --surface2: #1a1a2e;
+    --border: #2a2a4a;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --red: #c0392b;
+    --text: #d4c5a9;
+    --text-dim: #6e6a5e;
+    --shadow: 0 4px 24px rgba(0,0,0,0.6);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Crimson Pro', serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── LOBBY ─────────────────────── */
+  #lobby {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d0d12 70%);
+  }
+  .lobby-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 48px;
+    width: 440px;
+    box-shadow: var(--shadow), 0 0 80px rgba(201,168,76,0.08);
+    text-align: center;
+  }
+  .game-title {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 6px;
+    text-shadow: 0 0 30px rgba(201,168,76,0.4);
+    margin-bottom: 6px;
+  }
+  .game-subtitle {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 1rem;
+    margin-bottom: 36px;
+    letter-spacing: 2px;
+  }
+  .lobby-card input, .lobby-card select {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .lobby-card input:focus { border-color: var(--gold); }
+  .btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #8b6914, var(--gold));
+    color: #0d0d12;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,0.3); }
+  .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    margin-top: 0;
+  }
+  .btn-outline:hover { background: rgba(201,168,76,0.1); }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  #roomCode { font-family: 'Cinzel', serif; letter-spacing: 3px; text-align: center; font-size: 1.1rem; }
+
+  /* ── WAITING ROOM ──────────────────────────────── */
+  #waiting {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d0d12 70%);
+  }
+  .waiting-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px;
+    width: 500px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .waiting-card h2 { font-family: 'Cinzel', serif; color: var(--gold); margin-bottom: 8px; letter-spacing: 3px; }
+  .link-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: var(--gold);
+    margin: 16px 0;
+    word-break: break-all;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+  }
+  #playerList { list-style: none; margin: 20px 0; text-align: left; }
+  #playerList li {
+    padding: 10px 16px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg);
+  }
+  .player-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── GAME ─────────────────────── */
+  #game { display: none; flex: 1; overflow: hidden; }
+
+  .game-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    grid-template-rows: 48px 1fr;
+    height: 100vh;
+    gap: 0;
+  }
+
+  /* TOPBAR */
+  .topbar {
+    grid-column: 1 / -1;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+  }
+  .topbar-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1rem; letter-spacing: 3px; margin-right: auto; }
+  .phase-badge {
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.08);
+  }
+  .turn-info { font-size: 0.8rem; color: var(--text-dim); }
+  .event-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    background: rgba(192,57,43,0.2);
+    border: 1px solid #c0392b;
+    color: #e74c3c;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .panel-section { background: var(--bg); border-radius: 8px; padding: 12px; }
+  .panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .player-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    background: var(--surface);
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+    font-size: 0.85rem;
+  }
+  .player-card.active { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+  .player-card.me { box-shadow: inset 0 0 0 1px var(--gold-light); }
+  .player-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: #0d0d12; }
+  .player-name { flex: 1; font-size: 0.85rem; }
+  .player-stats { font-size: 0.7rem; color: var(--text-dim); }
+
+  /* MAP */
+  .map-container {
+    position: relative;
+    overflow: hidden;
+    background: #0a1628;
+    cursor: crosshair;
+  }
+  #worldMap { width: 100%; height: 100%; }
+
+  .territory-group { transition: all 0.15s; }
+  .territory-group:hover .territory-shape { filter: brightness(1.3); }
+  .territory-shape { cursor: pointer; stroke-width: 1.5; transition: all 0.2s; }
+  .territory-shape.selected { stroke: white !important; stroke-width: 2.5; filter: brightness(1.4); }
+  .territory-shape.attack-source { stroke: #e74c3c !important; stroke-width: 2.5; animation: pulse-red 1s infinite; }
+  .territory-shape.attack-target { stroke: #e74c3c !important; stroke-width: 2px; filter: brightness(0.8); }
+  .territory-shape.move-source { stroke: #3498db !important; stroke-width: 2.5; animation: pulse-blue 1s infinite; }
+  .territory-shape.move-target { stroke: #3498db !important; stroke-width: 2px; }
+  .territory-shape.hidden-territory { fill: #1a1f2e !important; opacity: 0.6; }
+
+  @keyframes pulse-red { 0%,100% { filter: brightness(1.2); } 50% { filter: brightness(1.6); } }
+  @keyframes pulse-blue { 0%,100% { filter: brightness(1.2); } 50% { filter: brightness(1.6); } }
+
+  .territory-label { font-size: 4px; fill: rgba(255,255,255,0.85); text-anchor: middle; pointer-events: none; font-family: 'Cinzel', serif; }
+  .territory-soldiers { font-size: 5px; fill: white; text-anchor: middle; pointer-events: none; font-weight: bold; font-family: 'Cinzel', serif; }
+  .territory-soldiers-bg { fill: rgba(0,0,0,0.5); }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Action panel */
+  .action-section { background: var(--bg); border-radius: 8px; padding: 12px; }
+  .action-title { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+
+  .territory-info { margin-bottom: 10px; }
+  .terr-name { font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--gold-light); }
+  .terr-detail { font-size: 0.75rem; color: var(--text-dim); }
+
+  .slider-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+  .slider-row input[type=range] { flex: 1; accent-color: var(--gold); }
+  .slider-val { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--gold); min-width: 28px; text-align: center; }
+
+  .btn-sm {
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    margin-top: 6px;
+    letter-spacing: 1.5px;
+  }
+  .btn-danger { background: linear-gradient(135deg, #7a1f1f, var(--red)); color: white; }
+  .btn-info { background: linear-gradient(135deg, #1a4a7a, #2980b9); color: white; }
+
+  /* LOG */
+  #gameLog {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 10px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 120px;
+    max-height: 200px;
+  }
+  .log-entry { font-size: 0.72rem; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-dim); line-height: 1.4; }
+  .log-entry:last-child { color: var(--text); }
+
+  /* DIPLOMACY */
+  .diplo-section { background: var(--bg); border-radius: 8px; padding: 12px; }
+  .diplo-target { margin-bottom: 8px; }
+  .diplo-target select { width: 100%; padding: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Crimson Pro', serif; font-size: 0.85rem; }
+  .diplo-msg { width: 100%; padding: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Crimson Pro', serif; font-size: 0.85rem; resize: none; height: 60px; margin-bottom: 6px; }
+  .diplo-gold { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .diplo-gold input { width: 70px; padding: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--gold); font-size: 0.85rem; }
+  .msg-list { max-height: 150px; overflow-y: auto; margin-top: 8px; }
+  .msg-item { padding: 6px 8px; background: var(--surface); border-radius: 4px; margin-bottom: 4px; font-size: 0.72rem; }
+  .msg-from { color: var(--gold); font-size: 0.65rem; margin-bottom: 2px; }
+
+  /* OVERLAY (notification, error) */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    z-index: 9999;
+    animation: fadeInUp 0.3s ease;
+    pointer-events: none;
+  }
+  .toast.error { background: #7a1f1f; border: 1px solid #c0392b; color: white; }
+  .toast.info { background: #1a3a5a; border: 1px solid #2980b9; color: white; }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+  /* WINNER */
+  #winnerOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+  }
+  .winner-card { text-align: center; padding: 60px; }
+  .winner-title { font-family: 'Cinzel', serif; font-size: 3rem; color: var(--gold); text-shadow: 0 0 40px rgba(201,168,76,0.6); margin-bottom: 16px; }
+  .winner-name { font-family: 'Cinzel', serif; font-size: 2rem; color: white; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .gold-icon { color: var(--gold); }
+  .phase-steps { display: flex; gap: 4px; align-items: center; }
+  .phase-step {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.6rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.5px;
+    background: var(--surface2);
+    color: var(--text-dim);
+    border: 1px solid transparent;
+  }
+  .phase-step.active { background: rgba(201,168,76,0.15); color: var(--gold); border-color: var(--gold); }
+  .phase-step.done { color: #4a9;  border-color: #2a6; background: rgba(42,170,100,0.1); }
+
+  .continent-bar { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .cont-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-family: 'Cinzel', serif; }
+
+  /* FOG pattern */
+  .fog { fill: url(#fogPattern); }
+
+  @media (max-width: 900px) {
+    .game-layout { grid-template-columns: 200px 1fr 220px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ LOBBY ══ -->
+<div id="lobby">
+  <div class="lobby-card">
+    <div class="game-title">STRATEGOS</div>
+    <div class="game-subtitle">Conquête & Diplomatie Mondiale</div>
+
+    <input id="playerName" placeholder="Votre nom de commandant" maxlength="20">
+
+    <button class="btn" onclick="createRoom()">⚔️ Créer une partie</button>
+
+    <hr class="divider">
+
+    <input id="roomCode" placeholder="CODE SALLE" maxlength="6" style="text-transform:uppercase">
+    <button class="btn btn-outline" onclick="joinRoom()">Rejoindre une salle</button>
+  </div>
+</div>
+
+<!-- ══ WAITING ROOM ══ -->
+<div id="waiting" style="display:none;align-items:center;justify-content:center;height:100vh;background:radial-gradient(ellipse at center,#1a1a3e 0%,#0d0d12 70%);">
+  <div class="waiting-card">
+    <h2>SALLE D'ATTENTE</h2>
+    <p style="color:var(--text-dim);font-size:0.85rem;margin:8px 0">Partagez ce lien ou ce code à vos alliés :</p>
+    <div class="link-box" id="shareLink" onclick="copyLink()">Chargement…</div>
+    <p style="font-size:0.75rem;color:var(--text-dim)">👆 Cliquez pour copier</p>
+
+    <ul id="playerList"></ul>
+
+    <button class="btn" id="startBtn" onclick="startGame()" disabled>⚔️ Lancer la bataille (2 joueurs min)</button>
+    <p style="font-size:0.72rem;color:var(--text-dim);margin-top:10px;font-style:italic">Seul le créateur peut lancer la partie</p>
+  </div>
+</div>
+
+<!-- ══ GAME ══ -->
+<div id="game">
+  <div id="winnerOverlay">
+    <div class="winner-card">
+      <div class="winner-title">🏆 VICTOIRE 🏆</div>
+      <div class="winner-name" id="winnerName"></div>
+      <p style="color:var(--text-dim);margin-top:20px;font-style:italic">a conquis le monde entier</p>
+      <button class="btn" style="margin-top:30px;max-width:200px" onclick="location.reload()">Nouvelle partie</button>
+    </div>
+  </div>
+
+  <div class="game-layout">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <span class="topbar-title">⚔ STRATEGOS</span>
+      <div class="phase-steps">
+        <div class="phase-step" id="ps-deployment">📦 Déploiement</div>
+        <div class="phase-step" id="ps-diplomacy">🤝 Diplomatie</div>
+        <div class="phase-step" id="ps-attack">⚔️ Attaque</div>
+        <div class="phase-step" id="ps-movement">🚶 Mouvement</div>
+      </div>
+      <div id="activeEvents" style="display:flex;gap:4px;"></div>
+      <div class="turn-info" id="turnInfo">Tour 1</div>
+      <div style="color:var(--gold);font-size:0.8rem">💰 <span id="myGold">0</span> or</div>
+    </div>
+
+    <!-- LEFT PANEL: players -->
+    <div class="left-panel">
+      <div class="panel-section">
+        <div class="panel-title">⚔ Commandants</div>
+        <div id="playerCards"></div>
+      </div>
+
+      <div class="panel-section" style="flex:1">
+        <div class="panel-title">📜 Journal de guerre</div>
+        <div id="gameLog"></div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="map-container" id="mapContainer">
+      <svg id="worldMap" viewBox="0 0 100 55" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <pattern id="fogPattern" patternUnits="userSpaceOnUse" width="3" height="3">
+            <rect width="3" height="3" fill="#0a1628"/>
+            <circle cx="1.5" cy="1.5" r="0.5" fill="#0f1f3a" opacity="0.5"/>
+          </pattern>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="0.3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Ocean background -->
+        <rect width="100" height="55" fill="#0a1628"/>
+        <!-- Decorative grid -->
+        <g stroke="#0d2040" stroke-width="0.2" opacity="0.5">
+          <line x1="0" y1="18.3" x2="100" y2="18.3"/>
+          <line x1="0" y1="36.7" x2="100" y2="36.7"/>
+          <line x1="25" y1="0" x2="25" y2="55"/>
+          <line x1="50" y1="0" x2="50" y2="55"/>
+          <line x1="75" y1="0" x2="75" y2="55"/>
+        </g>
+        <!-- Territories will be drawn by JS -->
+        <g id="territories"></g>
+      </svg>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <!-- Selected territory -->
+      <div class="action-section" id="selectedPanel" style="display:none">
+        <div class="action-title">🏔 Territoire sélectionné</div>
+        <div class="territory-info">
+          <div class="terr-name" id="selName">—</div>
+          <div class="terr-detail" id="selDetail">—</div>
+        </div>
+        <!-- Deploy -->
+        <div id="deployControls" style="display:none">
+          <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px">Déployer des renforts (reste: <span id="deployLeft" style="color:var(--gold)">0</span>)</div>
+          <div class="slider-row">
+            <input type="range" id="deploySlider" min="1" max="10" value="1" oninput="document.getElementById('deployVal').textContent=this.value">
+            <span class="slider-val" id="deployVal">1</span>
+          </div>
+          <button class="btn btn-sm" onclick="deploy()">📦 Déployer</button>
+        </div>
+        <!-- Attack -->
+        <div id="attackControls" style="display:none">
+          <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px">Attaque : <span id="attackSourceName" style="color:#e74c3c">—</span> → ici</div>
+          <div class="slider-row">
+            <input type="range" id="attackSlider" min="1" max="20" value="1" oninput="document.getElementById('attackVal').textContent=this.value">
+            <span class="slider-val" id="attackVal">1</span>
+          </div>
+          <button class="btn btn-sm btn-danger" onclick="launchAttack()">⚔️ Attaquer</button>
+          <button class="btn btn-sm btn-outline" onclick="cancelAction()" style="margin-top:4px">Annuler</button>
+        </div>
+        <!-- Move -->
+        <div id="moveControls" style="display:none">
+          <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px">Déplacer vers ici depuis : <span id="moveSourceName" style="color:#3498db">—</span></div>
+          <div class="slider-row">
+            <input type="range" id="moveSlider" min="1" max="20" value="1" oninput="document.getElementById('moveVal').textContent=this.value">
+            <span class="slider-val" id="moveVal">1</span>
+          </div>
+          <button class="btn btn-sm btn-info" onclick="launchMove()">🚶 Déplacer</button>
+          <button class="btn btn-sm btn-outline" onclick="cancelAction()" style="margin-top:4px">Annuler</button>
+        </div>
+        <!-- Generic select btns -->
+        <div id="genericControls">
+          <button class="btn btn-sm btn-danger" id="btnSetAttackSrc" onclick="setAttackSource()" style="display:none">⚔️ Attaquer depuis ici</button>
+          <button class="btn btn-sm btn-info" id="btnSetMoveSrc" onclick="setMoveSource()" style="display:none">🚶 Déplacer depuis ici</button>
+        </div>
+      </div>
+
+      <!-- Phase controls -->
+      <div class="action-section">
+        <div class="action-title">🎯 Phase actuelle</div>
+        <div id="phaseDesc" style="font-size:0.8rem;color:var(--text-dim);margin-bottom:10px;font-style:italic">—</div>
+        <button class="btn btn-sm" id="nextPhaseBtn" onclick="nextPhase()">Passer à la phase suivante →</button>
+      </div>
+
+      <!-- Diplomacy -->
+      <div class="diplo-section" id="diploSection" style="display:none">
+        <div class="action-title">🤝 Diplomatie</div>
+        <div class="diplo-target">
+          <select id="diploTarget">
+            <option value="">Choisir un joueur…</option>
+          </select>
+        </div>
+        <textarea class="diplo-msg" id="diploMsg" placeholder="Message secret…"></textarea>
+        <div class="diplo-gold">
+          <span style="font-size:0.8rem">💰 Or :</span>
+          <input type="number" id="diploGold" value="0" min="0">
+        </div>
+        <button class="btn btn-sm" onclick="sendDiplomacy()">📩 Envoyer</button>
+        <div class="msg-list" id="msgList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  TERRITORY SHAPES (SVG paths, simplified polygons)
+// ═══════════════════════════════════════════════
+const TERRITORY_SHAPES = {
+  // NORTH AMERICA
+  'alaska': 'M 5,8 L 12,7 L 14,10 L 12,14 L 8,15 L 5,13 Z',
+  'northwest_territory': 'M 12,7 L 22,6 L 24,9 L 22,13 L 16,14 L 14,10 Z',
+  'greenland': 'M 24,2 L 34,2 L 34,10 L 30,12 L 26,11 L 22,8 Z',
+  'alberta': 'M 12,14 L 18,13 L 18,18 L 16,21 L 12,20 L 10,17 Z',
+  'ontario': 'M 18,13 L 24,12 L 26,15 L 24,19 L 20,20 L 18,18 Z',
+  'quebec': 'M 24,12 L 30,11 L 30,16 L 28,18 L 24,18 L 24,12 Z',
+  'western_us': 'M 10,20 L 17,20 L 18,24 L 16,27 L 11,27 L 9,24 Z',
+  'eastern_us': 'M 17,20 L 24,18 L 25,22 L 23,27 L 18,27 L 17,24 Z',
+  'central_america': 'M 14,27 L 20,27 L 20,30 L 17,32 L 14,31 L 13,29 Z',
+
+  // SOUTH AMERICA
+  'venezuela': 'M 20,29 L 28,28 L 29,32 L 26,34 L 22,33 Z',
+  'peru': 'M 20,33 L 26,33 L 26,38 L 23,40 L 20,39 Z',
+  'brazil': 'M 26,29 L 34,29 L 34,38 L 29,40 L 25,38 L 24,34 Z',
+  'argentina': 'M 22,39 L 28,39 L 28,46 L 24,47 L 21,44 Z',
+
+  // EUROPE
+  'iceland': 'M 34,6 L 40,5 L 41,9 L 38,11 L 34,10 Z',
+  'great_britain': 'M 36,11 L 41,10 L 42,15 L 39,16 L 36,14 Z',
+  'western_europe': 'M 37,16 L 43,15 L 44,20 L 41,22 L 37,21 Z',
+  'northern_europe': 'M 41,10 L 47,10 L 48,15 L 44,16 L 42,15 Z',
+  'southern_europe': 'M 42,15 L 48,14 L 50,19 L 47,21 L 43,20 L 42,17 Z',
+  'ukraine': 'M 47,10 L 55,9 L 56,15 L 52,17 L 48,16 L 47,12 Z',
+
+  // AFRICA
+  'north_africa': 'M 37,22 L 49,21 L 50,27 L 46,29 L 39,29 L 37,26 Z',
+  'egypt': 'M 49,21 L 55,21 L 55,27 L 51,27 L 50,24 Z',
+  'west_africa': 'M 37,29 L 45,28 L 45,34 L 41,35 L 37,33 Z',
+  'central_africa': 'M 44,28 L 52,27 L 53,34 L 49,36 L 44,35 L 43,31 Z',
+  'east_africa': 'M 51,27 L 57,26 L 57,34 L 53,35 L 51,32 Z',
+  'south_africa': 'M 44,35 L 53,34 L 53,40 L 48,42 L 44,40 Z',
+
+  // ASIA
+  'ural': 'M 53,7 L 60,7 L 61,13 L 57,14 L 53,13 Z',
+  'siberia': 'M 59,5 L 68,5 L 69,11 L 64,13 L 60,12 Z',
+  'yakutsk': 'M 67,4 L 74,4 L 75,9 L 71,10 L 67,9 Z',
+  'kamchatka': 'M 73,6 L 80,6 L 81,12 L 77,13 L 73,11 Z',
+  'irkutsk': 'M 64,12 L 71,11 L 72,16 L 68,17 L 64,16 Z',
+  'mongolia': 'M 62,16 L 71,15 L 72,20 L 67,21 L 62,20 Z',
+  'japan': 'M 75,15 L 80,14 L 81,19 L 78,20 L 75,19 Z',
+  'afghanistan': 'M 53,16 L 61,15 L 62,21 L 58,22 L 54,20 Z',
+  'china': 'M 61,19 L 72,19 L 73,25 L 67,27 L 61,25 Z',
+  'middle_east': 'M 50,22 L 58,21 L 59,27 L 55,28 L 50,26 Z',
+  'india': 'M 58,24 L 65,23 L 65,30 L 61,32 L 58,29 Z',
+  'siam': 'M 64,26 L 72,25 L 73,31 L 68,32 L 64,30 Z',
+
+  // OCEANIA
+  'indonesia': 'M 67,32 L 74,31 L 75,36 L 71,37 L 67,35 Z',
+  'new_guinea': 'M 73,32 L 80,31 L 81,36 L 77,37 L 73,35 Z',
+  'western_australia': 'M 68,37 L 75,36 L 76,43 L 71,44 L 68,42 Z',
+  'eastern_australia': 'M 74,37 L 81,36 L 82,43 L 78,44 L 74,43 Z',
+};
+
+const TERRITORY_META = {
+  'alaska': { name: 'Alaska', continent: 'north_america', cx: 9, cy: 11 },
+  'northwest_territory': { name: 'NW Territory', continent: 'north_america', cx: 18, cy: 10 },
+  'greenland': { name: 'Groenland', continent: 'north_america', cx: 28, cy: 7 },
+  'alberta': { name: 'Alberta', continent: 'north_america', cx: 15, cy: 17 },
+  'ontario': { name: 'Ontario', continent: 'north_america', cx: 21, cy: 16 },
+  'quebec': { name: 'Québec', continent: 'north_america', cx: 27, cy: 14 },
+  'western_us': { name: 'USA Ouest', continent: 'north_america', cx: 14, cy: 23 },
+  'eastern_us': { name: 'USA Est', continent: 'north_america', cx: 21, cy: 23 },
+  'central_america': { name: 'Am. Centrale', continent: 'north_america', cx: 16, cy: 29 },
+  'venezuela': { name: 'Venezuela', continent: 'south_america', cx: 24, cy: 31 },
+  'peru': { name: 'Pérou', continent: 'south_america', cx: 23, cy: 36 },
+  'brazil': { name: 'Brésil', continent: 'south_america', cx: 29, cy: 34 },
+  'argentina': { name: 'Argentine', continent: 'south_america', cx: 24, cy: 43 },
+  'iceland': { name: 'Islande', continent: 'europe', cx: 37, cy: 8 },
+  'great_britain': { name: 'G. Bretagne', continent: 'europe', cx: 39, cy: 13 },
+  'western_europe': { name: 'Eu. Ouest', continent: 'europe', cx: 40, cy: 18 },
+  'northern_europe': { name: 'Eu. Nord', continent: 'europe', cx: 44, cy: 13 },
+  'southern_europe': { name: 'Eu. Sud', continent: 'europe', cx: 46, cy: 18 },
+  'ukraine': { name: 'Ukraine', continent: 'europe', cx: 51, cy: 13 },
+  'north_africa': { name: 'Af. Nord', continent: 'africa', cx: 43, cy: 25 },
+  'egypt': { name: 'Égypte', continent: 'africa', cx: 52, cy: 24 },
+  'west_africa': { name: 'Af. Ouest', continent: 'africa', cx: 41, cy: 31 },
+  'central_africa': { name: 'Af. Centre', continent: 'africa', cx: 47, cy: 31 },
+  'east_africa': { name: 'Af. Est', continent: 'africa', cx: 53, cy: 30 },
+  'south_africa': { name: 'Af. Sud', continent: 'africa', cx: 48, cy: 38 },
+  'ural': { name: 'Oural', continent: 'asia', cx: 56, cy: 10 },
+  'siberia': { name: 'Sibérie', continent: 'asia', cx: 64, cy: 9 },
+  'yakutsk': { name: 'Yakoutsk', continent: 'asia', cx: 70, cy: 7 },
+  'kamchatka': { name: 'Kamtchatka', continent: 'asia', cx: 76, cy: 9 },
+  'irkutsk': { name: 'Irkoutsk', continent: 'asia', cx: 68, cy: 14 },
+  'mongolia': { name: 'Mongolie', continent: 'asia', cx: 67, cy: 18 },
+  'japan': { name: 'Japon', continent: 'asia', cx: 78, cy: 17 },
+  'afghanistan': { name: 'Afghanistan', continent: 'asia', cx: 57, cy: 18 },
+  'china': { name: 'Chine', continent: 'asia', cx: 67, cy: 22 },
+  'middle_east': { name: 'Moy.-Orient', continent: 'asia', cx: 54, cy: 24 },
+  'india': { name: 'Inde', continent: 'asia', cx: 61, cy: 27 },
+  'siam': { name: 'Asie Sud', continent: 'asia', cx: 68, cy: 28 },
+  'indonesia': { name: 'Indonésie', continent: 'oceania', cx: 71, cy: 34 },
+  'new_guinea': { name: 'N. Guinée', continent: 'oceania', cx: 77, cy: 34 },
+  'western_australia': { name: 'Aus. Ouest', continent: 'oceania', cx: 72, cy: 40 },
+  'eastern_australia': { name: 'Aus. Est', continent: 'oceania', cx: 77, cy: 40 },
+};
+
+const CONTINENT_COLORS = {
+  'north_america': '#c8824a',
+  'south_america': '#c9b040',
+  'europe': '#5a90c0',
+  'africa': '#6aaa3c',
+  'asia': '#a060c0',
+  'oceania': '#40a8a0',
+};
+
+const ADJACENCIES = {
+  'alaska': ['northwest_territory', 'alberta', 'kamchatka'],
+  'northwest_territory': ['alaska', 'alberta', 'ontario', 'greenland'],
+  'greenland': ['northwest_territory', 'ontario', 'quebec', 'iceland'],
+  'alberta': ['alaska', 'northwest_territory', 'ontario', 'western_us'],
+  'ontario': ['northwest_territory', 'alberta', 'greenland', 'quebec', 'western_us', 'eastern_us'],
+  'quebec': ['ontario', 'greenland', 'eastern_us'],
+  'western_us': ['alberta', 'ontario', 'eastern_us', 'central_america'],
+  'eastern_us': ['ontario', 'quebec', 'western_us', 'central_america'],
+  'central_america': ['western_us', 'eastern_us', 'venezuela'],
+  'venezuela': ['central_america', 'peru', 'brazil'],
+  'peru': ['venezuela', 'brazil', 'argentina'],
+  'brazil': ['venezuela', 'peru', 'argentina', 'north_africa'],
+  'argentina': ['peru', 'brazil'],
+  'iceland': ['greenland', 'great_britain', 'northern_europe'],
+  'great_britain': ['iceland', 'western_europe', 'northern_europe'],
+  'western_europe': ['great_britain', 'northern_europe', 'southern_europe', 'north_africa'],
+  'northern_europe': ['great_britain', 'iceland', 'western_europe', 'southern_europe', 'ukraine'],
+  'southern_europe': ['western_europe', 'northern_europe', 'ukraine', 'north_africa', 'egypt', 'middle_east'],
+  'ukraine': ['northern_europe', 'southern_europe', 'ural', 'afghanistan', 'middle_east'],
+  'north_africa': ['western_europe', 'southern_europe', 'brazil', 'egypt', 'east_africa', 'central_africa', 'west_africa'],
+  'egypt': ['north_africa', 'southern_europe', 'middle_east', 'east_africa'],
+  'east_africa': ['egypt', 'north_africa', 'central_africa', 'south_africa', 'middle_east'],
+  'central_africa': ['north_africa', 'east_africa', 'west_africa', 'south_africa'],
+  'west_africa': ['north_africa', 'central_africa'],
+  'south_africa': ['east_africa', 'central_africa'],
+  'ural': ['ukraine', 'siberia', 'afghanistan', 'china'],
+  'siberia': ['ural', 'yakutsk', 'irkutsk', 'mongolia', 'china'],
+  'yakutsk': ['siberia', 'kamchatka', 'irkutsk'],
+  'kamchatka': ['alaska', 'yakutsk', 'irkutsk', 'mongolia', 'japan'],
+  'irkutsk': ['siberia', 'yakutsk', 'kamchatka', 'mongolia'],
+  'mongolia': ['siberia', 'irkutsk', 'kamchatka', 'china', 'japan'],
+  'japan': ['kamchatka', 'mongolia'],
+  'afghanistan': ['ukraine', 'ural', 'china', 'india', 'middle_east'],
+  'china': ['ural', 'siberia', 'mongolia', 'afghanistan', 'india', 'siam'],
+  'middle_east': ['ukraine', 'southern_europe', 'egypt', 'east_africa', 'afghanistan', 'india'],
+  'india': ['middle_east', 'afghanistan', 'china', 'siam'],
+  'siam': ['india', 'china', 'indonesia'],
+  'indonesia': ['siam', 'new_guinea', 'western_australia'],
+  'new_guinea': ['indonesia', 'western_australia', 'eastern_australia'],
+  'western_australia': ['indonesia', 'new_guinea', 'eastern_australia'],
+  'eastern_australia': ['new_guinea', 'western_australia'],
+};
+
+// ═══════════════════════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════════════════════
+let ws = null;
+let myId = null;
+let myName = '';
+let roomId = null;
+let isCreator = false;
+let gameState = null;
+let selectedTerritory = null;
+let actionMode = null; // 'attack_src', 'attack_tgt', 'move_src', 'move_tgt'
+let actionSource = null;
+
+// ═══════════════════════════════════════════════
+//  CONNECTION
+// ═══════════════════════════════════════════════
+function connect(callback) {
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  ws = new WebSocket(`${proto}//${location.host}`);
+  ws.onopen = callback;
+  ws.onmessage = (e) => handleMessage(JSON.parse(e.data));
+  ws.onerror = () => showToast('Erreur de connexion au serveur.', 'error');
+  ws.onclose = () => showToast('Déconnecté du serveur.', 'error');
+}
+
+function send(data) { ws.send(JSON.stringify(data)); }
+
+function createRoom() {
+  myName = document.getElementById('playerName').value.trim() || 'Commandant';
+  isCreator = true;
+  connect(() => send({ type: 'join', name: myName }));
+}
+
+function joinRoom() {
+  const code = document.getElementById('roomCode').value.trim().toUpperCase();
+  if (!code) { showToast('Entrez un code de salle.', 'error'); return; }
+  myName = document.getElementById('playerName').value.trim() || 'Commandant';
+  connect(() => send({ type: 'join', roomId: code, name: myName }));
+}
+
+function copyLink() {
+  const link = document.getElementById('shareLink').textContent;
+  navigator.clipboard.writeText(link).then(() => showToast('Lien copié !', 'info'));
+}
+
+function startGame() {
+  send({ type: 'start' });
+}
+
+// ═══════════════════════════════════════════════
+//  MESSAGE HANDLER
+// ═══════════════════════════════════════════════
+function handleMessage(msg) {
+  if (msg.type === 'joined') {
+    myId = msg.playerId;
+    roomId = msg.roomId;
+    // Save for reconnect
+    localStorage.setItem('strategos_pid', myId);
+    localStorage.setItem('strategos_room', roomId);
+
+    document.getElementById('lobby').style.display = 'none';
+    document.getElementById('waiting').style.display = 'flex';
+
+    const shareUrl = `${location.origin}?room=${roomId}`;
+    document.getElementById('shareLink').textContent = shareUrl;
+  }
+
+  if (msg.type === 'state') {
+    myId = msg.myId;
+    gameState = msg.state;
+    renderState();
+
+    if (gameState.phase !== 'lobby' && gameState.phase !== 'gameover') {
+      document.getElementById('waiting').style.display = 'none';
+      document.getElementById('game').style.display = 'block';
+    }
+
+    if (gameState.phase === 'gameover' && gameState.winner) {
+      const winnerName = gameState.players[gameState.winner]?.name || '???';
+      document.getElementById('winnerName').textContent = winnerName;
+      document.getElementById('winnerOverlay').style.display = 'flex';
+    }
+  }
+
+  if (msg.type === 'error') {
+    showToast(msg.message, 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════
+function renderState() {
+  if (!gameState) return;
+
+  // Waiting room players
+  renderWaitingPlayers();
+
+  if (gameState.phase === 'lobby') return;
+
+  renderMap();
+  renderPlayerCards();
+  renderPhaseUI();
+  renderLog();
+  renderDiplomacy();
+
+  // Gold
+  document.getElementById('myGold').textContent = gameState.myGold || 0;
+
+  // Turn info
+  const cp = gameState.players[gameState.currentPlayer];
+  document.getElementById('turnInfo').textContent = `Tour ${gameState.turn} — ${cp?.name || '?'}`;
+
+  // Events
+  const evDiv = document.getElementById('activeEvents');
+  evDiv.innerHTML = (gameState.activeEvents || []).map(e =>
+    `<span class="event-badge" title="${e.desc}">${e.name}</span>`
+  ).join('');
+
+  // Start button
+  const startBtn = document.getElementById('startBtn');
+  if (startBtn) {
+    const count = Object.keys(gameState.players || {}).length;
+    startBtn.disabled = !isCreator || count < 2;
+  }
+}
+
+function renderWaitingPlayers() {
+  const list = document.getElementById('playerList');
+  if (!list || !gameState?.players) return;
+  list.innerHTML = Object.values(gameState.players).map(p =>
+    `<li><span class="player-dot" style="background:${p.color}"></span><span>${p.name}${p.id === myId ? ' (vous)' : ''}</span>${!p.connected ? ' <span style="color:#888;font-size:0.7rem">hors ligne</span>' : ''}</li>`
+  ).join('');
+}
+
+function renderMap() {
+  const g = document.getElementById('territories');
+  g.innerHTML = '';
+
+  // Draw adjacency lines first
+  const drawnLines = new Set();
+  Object.keys(ADJACENCIES).forEach(fromId => {
+    if (!TERRITORY_META[fromId]) return;
+    ADJACENCIES[fromId].forEach(toId => {
+      if (!TERRITORY_META[toId]) return;
+      const key = [fromId, toId].sort().join('-');
+      if (drawnLines.has(key)) return;
+      drawnLines.add(key);
+      const f = TERRITORY_META[fromId], t = TERRITORY_META[toId];
+      // Skip very long transatlantic lines visually
+      if (Math.abs(f.cx - t.cx) > 30) return;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', f.cx); line.setAttribute('y1', f.cy);
+      line.setAttribute('x2', t.cx); line.setAttribute('y2', t.cy);
+      line.setAttribute('stroke', '#1a2a4a');
+      line.setAttribute('stroke-width', '0.3');
+      line.setAttribute('opacity', '0.5');
+      g.appendChild(line);
+    });
+  });
+
+  Object.keys(TERRITORY_SHAPES).forEach(tid => {
+    const shape = TERRITORY_SHAPES[tid];
+    const meta = TERRITORY_META[tid];
+    if (!meta) return;
+    const tData = gameState.territories?.[tid];
+    const owner = tData?.owner;
+    const soldiers = tData?.soldiers || 0;
+    const hidden = tData?.hidden;
+    const isMyTerritory = owner === myId;
+    const ownerData = owner ? gameState.players?.[owner] : null;
+
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.setAttribute('class', 'territory-group');
+    group.setAttribute('data-id', tid);
+
+    // Shape
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', shape);
+    path.setAttribute('class', `territory-shape${hidden ? ' hidden-territory' : ''}`);
+
+    let fill;
+    if (hidden) {
+      fill = '#0a1628';
+    } else if (ownerData) {
+      fill = ownerData.color;
+    } else {
+      fill = CONTINENT_COLORS[meta.continent] || '#2a2a4a';
+    }
+    path.setAttribute('fill', fill);
+    path.setAttribute('fill-opacity', hidden ? '0.3' : '0.75');
+    path.setAttribute('stroke', '#0a1628');
+    path.setAttribute('stroke-width', '0.8');
+
+    // Selected/action state
+    if (selectedTerritory === tid) path.classList.add('selected');
+    if (actionSource === tid && (actionMode === 'attack_tgt' || actionMode === 'attack_src')) path.classList.add('attack-source');
+    if (actionMode === 'attack_tgt' && ADJACENCIES[actionSource]?.includes(tid) && owner !== myId) path.classList.add('attack-target');
+    if (actionSource === tid && (actionMode === 'move_tgt' || actionMode === 'move_src')) path.classList.add('move-source');
+
+    group.appendChild(path);
+
+    if (!hidden) {
+      // Territory name label
+      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      label.setAttribute('x', meta.cx);
+      label.setAttribute('y', meta.cy - 1.5);
+      label.setAttribute('class', 'territory-label');
+      label.textContent = meta.name;
+      group.appendChild(label);
+
+      // Soldiers badge
+      if (soldiers > 0) {
+        const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        bgCircle.setAttribute('cx', meta.cx);
+        bgCircle.setAttribute('cy', meta.cy + 1.2);
+        bgCircle.setAttribute('r', '2');
+        bgCircle.setAttribute('fill', 'rgba(0,0,0,0.6)');
+        bgCircle.setAttribute('stroke', ownerData ? ownerData.color : '#888');
+        bgCircle.setAttribute('stroke-width', '0.4');
+        group.appendChild(bgCircle);
+
+        const soldierText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        soldierText.setAttribute('x', meta.cx);
+        soldierText.setAttribute('y', meta.cy + 2);
+        soldierText.setAttribute('class', 'territory-soldiers');
+        soldierText.textContent = soldiers;
+        group.appendChild(soldierText);
+      }
+    }
+
+    group.addEventListener('click', () => onTerritoryClick(tid));
+    g.appendChild(group);
+  });
+}
+
+function renderPlayerCards() {
+  const div = document.getElementById('playerCards');
+  if (!div || !gameState?.players) return;
+
+  const territoryCounts = {};
+  Object.values(gameState.territories || {}).forEach(t => {
+    if (t.owner) territoryCounts[t.owner] = (territoryCounts[t.owner] || 0) + 1;
+  });
+
+  div.innerHTML = (gameState.playerOrder || []).map(pid => {
+    const p = gameState.players[pid];
+    if (!p) return '';
+    const isActive = pid === gameState.currentPlayer;
+    const isMe = pid === myId;
+    const count = territoryCounts[pid] || 0;
+    return `<div class="player-card${isActive ? ' active' : ''}${isMe ? ' me' : ''}">
+      <div class="player-avatar" style="background:${p.color}">${p.name[0]}</div>
+      <div>
+        <div class="player-name">${p.name}${isMe ? ' ★' : ''}${isActive ? ' ⚔' : ''}</div>
+        <div class="player-stats">🏔 ${count} terr. · 💰 ${p.gold || 0} or${!p.connected ? ' · hors ligne' : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+const PHASE_LABELS = {
+  'production': '⚙️ Production',
+  'deployment': '📦 Déploiement',
+  'diplomacy': '🤝 Diplomatie',
+  'attack': '⚔️ Attaque',
+  'movement': '🚶 Mouvement',
+  'gameover': '🏆 Fin de partie',
+};
+
+const PHASE_DESC = {
+  'deployment': 'Placez vos renforts sur vos territoires.',
+  'diplomacy': 'Envoyez des messages et de l\'or à vos alliés.',
+  'attack': 'Cliquez sur un de vos territoires, puis attaquez un voisin.',
+  'movement': 'Déplacez vos troupes entre territoires alliés connectés.',
+  'production': 'Production en cours…',
+  'gameover': 'La partie est terminée.',
+};
+
+function renderPhaseUI() {
+  const phase = gameState.phase;
+  const isMyTurn = gameState.currentPlayer === myId;
+
+  // Phase steps highlight
+  ['deployment', 'diplomacy', 'attack', 'movement'].forEach(p => {
+    const el = document.getElementById(`ps-${p}`);
+    if (!el) return;
+    const phases = ['deployment', 'diplomacy', 'attack', 'movement'];
+    const phaseIdx = phases.indexOf(phase);
+    const thisIdx = phases.indexOf(p);
+    el.className = 'phase-step' + (phase === p ? ' active' : (thisIdx < phaseIdx ? ' done' : ''));
+  });
+
+  document.getElementById('phaseDesc').textContent = PHASE_DESC[phase] || '';
+  document.getElementById('nextPhaseBtn').disabled = !isMyTurn || phase === 'gameover' || phase === 'production';
+  document.getElementById('nextPhaseBtn').textContent = phase === 'movement' ? 'Terminer mon tour →' : 'Phase suivante →';
+
+  // Deploy controls
+  const deployLeft = isMyTurn && phase === 'deployment' ? gameState.deploymentLeft : 0;
+  document.getElementById('deployLeft').textContent = deployLeft;
+
+  // Diplomacy section
+  document.getElementById('diploSection').style.display = (phase === 'diplomacy') ? 'block' : 'none';
+
+  // Update selected territory panel
+  renderSelectedPanel();
+}
+
+function renderSelectedPanel() {
+  const panel = document.getElementById('selectedPanel');
+  const phase = gameState.phase;
+  const isMyTurn = gameState.currentPlayer === myId;
+
+  if (!selectedTerritory) {
+    panel.style.display = 'none';
+    return;
+  }
+
+  panel.style.display = 'block';
+  const meta = TERRITORY_META[selectedTerritory];
+  const tData = gameState.territories?.[selectedTerritory] || {};
+  const owner = tData.owner;
+  const ownerData = owner ? gameState.players?.[owner] : null;
+
+  document.getElementById('selName').textContent = meta?.name || selectedTerritory;
+  document.getElementById('selDetail').textContent = owner
+    ? `Propriétaire : ${ownerData?.name || '?'} · ${tData.soldiers || 0} soldats`
+    : `Territoire neutre · ${tData.soldiers || 0} soldats`;
+
+  // Show/hide control blocks
+  const deployControls = document.getElementById('deployControls');
+  const attackControls = document.getElementById('attackControls');
+  const moveControls = document.getElementById('moveControls');
+  const genericControls = document.getElementById('genericControls');
+  const btnAttSrc = document.getElementById('btnSetAttackSrc');
+  const btnMovSrc = document.getElementById('btnSetMoveSrc');
+
+  deployControls.style.display = 'none';
+  attackControls.style.display = 'none';
+  moveControls.style.display = 'none';
+  btnAttSrc.style.display = 'none';
+  btnMovSrc.style.display = 'none';
+
+  if (isMyTurn && phase === 'deployment' && owner === myId) {
+    deployControls.style.display = 'block';
+    const left = gameState.deploymentLeft || 0;
+    document.getElementById('deploySlider').max = Math.max(1, left);
+    document.getElementById('deploySlider').value = 1;
+    document.getElementById('deployVal').textContent = 1;
+  }
+
+  if (isMyTurn && phase === 'attack') {
+    if (actionMode === 'attack_tgt' && actionSource && owner !== myId && ADJACENCIES[actionSource]?.includes(selectedTerritory)) {
+      attackControls.style.display = 'block';
+      document.getElementById('attackSourceName').textContent = TERRITORY_META[actionSource]?.name || actionSource;
+      const myTroops = gameState.territories?.[actionSource]?.soldiers || 1;
+      document.getElementById('attackSlider').max = Math.max(1, myTroops - 1);
+      document.getElementById('attackSlider').value = Math.max(1, myTroops - 1);
+      document.getElementById('attackVal').textContent = Math.max(1, myTroops - 1);
+    } else if (owner === myId && tData.soldiers > 1) {
+      btnAttSrc.style.display = 'block';
+    }
+  }
+
+  if (isMyTurn && phase === 'movement') {
+    if (actionMode === 'move_tgt' && actionSource && owner === myId) {
+      moveControls.style.display = 'block';
+      document.getElementById('moveSourceName').textContent = TERRITORY_META[actionSource]?.name || actionSource;
+      const myTroops = gameState.territories?.[actionSource]?.soldiers || 1;
+      document.getElementById('moveSlider').max = Math.max(1, myTroops - 1);
+      document.getElementById('moveSlider').value = Math.min(5, myTroops - 1);
+      document.getElementById('moveVal').textContent = Math.min(5, myTroops - 1);
+    } else if (owner === myId && tData.soldiers > 1) {
+      btnMovSrc.style.display = 'block';
+    }
+  }
+}
+
+function renderLog() {
+  const logDiv = document.getElementById('gameLog');
+  if (!logDiv || !gameState?.log) return;
+  logDiv.innerHTML = gameState.log.map(l => `<div class="log-entry">${l}</div>`).join('');
+  logDiv.scrollTop = logDiv.scrollHeight;
+}
+
+function renderDiplomacy() {
+  const select = document.getElementById('diploTarget');
+  if (!select || !gameState?.players) return;
+  const others = Object.values(gameState.players).filter(p => p.id !== myId);
+  select.innerHTML = '<option value="">Choisir…</option>' +
+    others.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+
+  const msgList = document.getElementById('msgList');
+  if (!gameState.myMessages?.length) { msgList.innerHTML = ''; return; }
+  msgList.innerHTML = gameState.myMessages.slice(-10).reverse().map(m => {
+    const from = gameState.players[m.from]?.name || '?';
+    const to = gameState.players[m.to]?.name || '?';
+    const isMine = m.from === myId;
+    return `<div class="msg-item">
+      <div class="msg-from">${isMine ? `→ ${to}` : `← ${from}`}</div>
+      ${m.message}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+//  TERRITORY CLICK
+// ═══════════════════════════════════════════════
+function onTerritoryClick(tid) {
+  const phase = gameState?.phase;
+  const isMyTurn = gameState?.currentPlayer === myId;
+  const tData = gameState?.territories?.[tid] || {};
+  const owner = tData.owner;
+
+  // Attack flow
+  if (isMyTurn && phase === 'attack') {
+    if (!actionMode || actionMode === 'attack_src') {
+      // First click: set source
+      if (owner === myId && tData.soldiers > 1) {
+        actionMode = 'attack_tgt';
+        actionSource = tid;
+        selectedTerritory = tid;
+        renderMap();
+        renderSelectedPanel();
+        return;
+      }
+    } else if (actionMode === 'attack_tgt') {
+      // Second click: set target
+      if (tid === actionSource) {
+        cancelAction();
+        return;
+      }
+      if (owner !== myId && ADJACENCIES[actionSource]?.includes(tid)) {
+        selectedTerritory = tid;
+        renderMap();
+        renderSelectedPanel();
+        return;
+      } else if (owner === myId) {
+        // Reselect source
+        actionSource = tid;
+        selectedTerritory = tid;
+        renderMap();
+        renderSelectedPanel();
+        return;
+      }
+    }
+  }
+
+  // Move flow
+  if (isMyTurn && phase === 'movement') {
+    if (!actionMode || actionMode === 'move_src') {
+      if (owner === myId && tData.soldiers > 1) {
+        actionMode = 'move_tgt';
+        actionSource = tid;
+        selectedTerritory = tid;
+        renderMap();
+        renderSelectedPanel();
+        return;
+      }
+    } else if (actionMode === 'move_tgt') {
+      if (tid === actionSource) { cancelAction(); return; }
+      if (owner === myId) {
+        selectedTerritory = tid;
+        renderMap();
+        renderSelectedPanel();
+        return;
+      }
+    }
+  }
+
+  selectedTerritory = tid;
+  renderMap();
+  renderSelectedPanel();
+}
+
+function setAttackSource() {
+  actionMode = 'attack_tgt';
+  actionSource = selectedTerritory;
+  renderMap();
+  renderSelectedPanel();
+  showToast('Cliquez sur un territoire ennemi adjacent pour attaquer.', 'info');
+}
+
+function setMoveSource() {
+  actionMode = 'move_tgt';
+  actionSource = selectedTerritory;
+  renderMap();
+  renderSelectedPanel();
+  showToast('Cliquez sur un territoire allié pour déplacer les troupes.', 'info');
+}
+
+function cancelAction() {
+  actionMode = null;
+  actionSource = null;
+  renderMap();
+  renderSelectedPanel();
+}
+
+// ═══════════════════════════════════════════════
+//  ACTIONS
+// ═══════════════════════════════════════════════
+function deploy() {
+  if (!selectedTerritory) return;
+  const amount = parseInt(document.getElementById('deploySlider').value);
+  send({ type: 'deploy', territory: selectedTerritory, amount });
+}
+
+function launchAttack() {
+  if (!actionSource || !selectedTerritory) return;
+  const amount = parseInt(document.getElementById('attackSlider').value);
+  send({ type: 'attack', from: actionSource, to: selectedTerritory, amount });
+  cancelAction();
+}
+
+function launchMove() {
+  if (!actionSource || !selectedTerritory) return;
+  const amount = parseInt(document.getElementById('moveSlider').value);
+  send({ type: 'move', from: actionSource, to: selectedTerritory, amount });
+  cancelAction();
+}
+
+function sendDiplomacy() {
+  const to = document.getElementById('diploTarget').value;
+  const message = document.getElementById('diploMsg').value.trim();
+  const gold = parseInt(document.getElementById('diploGold').value) || 0;
+  if (!to) { showToast('Choisissez un joueur.', 'error'); return; }
+  if (!message && gold === 0) { showToast('Entrez un message ou un montant d\'or.', 'error'); return; }
+  send({ type: 'diplomacy', to, message, gold });
+  document.getElementById('diploMsg').value = '';
+  document.getElementById('diploGold').value = 0;
+}
+
+function nextPhase() {
+  send({ type: 'next_phase' });
+  cancelAction();
+}
+
+// ═══════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════
+function showToast(msg, type = 'info') {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ═══════════════════════════════════════════════
+//  AUTO-JOIN FROM URL
+// ═══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(location.search);
+  const room = params.get('room');
+  if (room) {
+    document.getElementById('roomCode').value = room;
+    showToast(`Code de salle pré-rempli : ${room}. Entrez votre nom et rejoignez !`, 'info');
+  }
+});
+</script>
+</body>
+</html>
