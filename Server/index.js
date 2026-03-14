@@ -239,8 +239,8 @@ function handleConnection(ws) {
       broadcastState(playerRoomId);
     }
 
-    if (type === 'attack') {
-      const result = game.attack(playerId, data.from, data.to, data.amount);
+    if (type === 'attack' || type === 'launch_army') {
+      const result = game.launchArmy(playerId, data.from, data.to, data.amount);
       if (result.error) { ws.send(JSON.stringify({ type: 'error', message: result.error })); return; }
       broadcastState(playerRoomId);
     }

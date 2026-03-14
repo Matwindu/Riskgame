@@ -273,12 +273,15 @@
         </div>
 
         <div id="attackControls" style="display:none">
-          <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px">Depuis : <span id="attackSourceName" style="color:#e74c3c">—</span></div>
+          <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:4px">Depuis : <span id="attackSourceName" style="color:#e74c3c">—</span></div>
+          <div id="attackDistInfo" style="font-size:0.72rem;margin-bottom:6px;padding:4px 8px;background:rgba(192,57,43,0.15);border-radius:4px;border-left:2px solid #c0392b;">
+            ⏱ <span id="attackDist">—</span> case(s) → arrivée dans <span id="attackTurns" style="color:#e74c3c;font-weight:bold">—</span> tour(s)
+          </div>
           <div class="slider-row">
             <input type="range" id="attackSlider" min="1" max="20" value="1" oninput="document.getElementById('attackVal').textContent=this.value">
             <span class="slider-val" id="attackVal">1</span>
           </div>
-          <button class="btn btn-sm btn-danger" onclick="launchAttack()">⚔️ Attaquer !</button>
+          <button class="btn btn-sm btn-danger" onclick="launchAttack()">⚔️ Envoyer l'armée !</button>
           <button class="btn btn-sm btn-outline" onclick="cancelAction()" style="margin-top:4px">Annuler</button>
         </div>
 
@@ -296,6 +299,12 @@
           <button class="btn btn-sm btn-danger" id="btnSetAttackSrc" onclick="setAttackSource()" style="display:none">⚔️ Attaquer depuis ici</button>
           <button class="btn btn-sm btn-info" id="btnSetMoveSrc" onclick="setMoveSource()" style="display:none">🚶 Déplacer depuis ici</button>
         </div>
+      </div>
+
+      <!-- Armées en marche -->
+      <div class="action-section" id="armiesPanel" style="display:none">
+        <div class="action-title">🚶 Armées en marche</div>
+        <div id="armiesList"></div>
       </div>
 
       <div class="action-section">
@@ -643,6 +652,7 @@ function renderState(){
   renderWaitingPlayers();
   if(gameState.phase==='lobby') return;
   renderMap();
+  renderArmiesOnMap();
   renderPlayerCards();
   renderPhaseUI();
   renderLog();
@@ -652,6 +662,7 @@ function renderState(){
   document.getElementById('turnInfo').textContent=`Tour ${gameState.turn} — ${cp?.name||'?'}`;
   const evDiv=document.getElementById('activeEvents');
   evDiv.innerHTML=(gameState.activeEvents||[]).map(e=>`<span class="event-badge">${e.name}</span>`).join('');
+  renderArmies();
 }
 
 function renderWaitingPlayers(){
@@ -806,9 +817,12 @@ function renderSelectedPanel(){
     document.getElementById('deployVal').textContent=1;
   }
   if(isMyTurn&&phase==='attack'){
-    if(actionMode==='attack_tgt'&&actionSource&&owner!==myId&&ADJACENCIES[actionSource]?.includes(selectedTerritory)){
+    if(actionMode==='attack_tgt'&&actionSource&&owner!==myId){
       ac.style.display='block';
       document.getElementById('attackSourceName').textContent=TERR_NAMES[actionSource]||actionSource;
+      const dist=getDistanceClient(actionSource, selectedTerritory);
+      document.getElementById('attackDist').textContent=dist;
+      document.getElementById('attackTurns').textContent=dist===0?'immédiat (adjacent)':dist;
       const myT=gameState.territories?.[actionSource]?.soldiers||1;
       document.getElementById('attackSlider').max=Math.max(1,myT-1);
       document.getElementById('attackSlider').value=Math.max(1,myT-1);
@@ -831,7 +845,49 @@ function renderSelectedPanel(){
   }
 }
 
-function renderLog(){
+function renderArmies(){
+  const armies=gameState?.marchingArmies||[];
+  const panel=document.getElementById('armiesPanel');
+  const list=document.getElementById('armiesList');
+  if(!armies.length){panel.style.display='none';return;}
+  panel.style.display='block';
+  list.innerHTML=armies.map(a=>{
+    const owner=gameState.players[a.owner];
+    const dest=TERR_NAMES[a.to]||a.to;
+    const src=TERR_NAMES[a.from]||a.from;
+    const color=owner?.color||'#888';
+    const ismine=a.owner===myId;
+    return `<div style="padding:6px 8px;background:var(--surface);border-radius:4px;margin-bottom:4px;border-left:3px solid ${color};font-size:0.72rem;">
+      <div style="color:${color};font-weight:bold;margin-bottom:2px;">${ismine?'⚔️ Ma':'🚶'} armée — ${owner?.name||'?'}</div>
+      <div style="color:var(--text-dim);">${src} → <strong style="color:var(--text)">${dest}</strong></div>
+      <div style="color:var(--gold);margin-top:2px;">🪖 ${a.soldiers} soldats · ⏱ ${a.turnsLeft} tour(s) avant arrivée</div>
+    </div>`;
+  }).join('');
+}
+
+function renderArmiesOnMap(){
+  // Dessine des icônes d'armées en marche sur la carte
+  const labG=document.getElementById('terrLabels');
+  (gameState?.marchingArmies||[]).forEach(a=>{
+    const destMeta=TERR_DATA[a.to];
+    if(!destMeta) return;
+    const owner=gameState.players[a.owner];
+    const color=owner?.color||'#fff';
+    // Petite icône flèche près de la destination
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    const cx=destMeta.lx+8, cy=destMeta.ly-2;
+    const bg=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    bg.setAttribute('cx',cx); bg.setAttribute('cy',cy); bg.setAttribute('r','5');
+    bg.setAttribute('fill',color); bg.setAttribute('opacity','0.85');
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',cx); t.setAttribute('y',cy+1.5);
+    t.setAttribute('font-size','4'); t.setAttribute('text-anchor','middle');
+    t.setAttribute('fill','#000'); t.setAttribute('pointer-events','none');
+    t.textContent='✈';
+    g.appendChild(bg); g.appendChild(t);
+    labG.appendChild(g);
+  });
+}
   const d=document.getElementById('gameLog');
   if(!d||!gameState?.log) return;
   d.innerHTML=gameState.log.map(l=>`<div class="log-entry">${l}</div>`).join('');
@@ -856,6 +912,20 @@ function renderDiplomacy(){
 // ═══════════════════════════════════════════════════════════════════
 //  TERRITORY CLICK
 // ═══════════════════════════════════════════════════════════════════
+// Distance BFS côté client
+function getDistanceClient(fromId, toId) {
+  if(fromId===toId) return 0;
+  const visited=new Set(), queue=[[fromId,0]];
+  while(queue.length){
+    const [cur,d]=queue.shift();
+    if(cur===toId) return d;
+    if(visited.has(cur)) continue;
+    visited.add(cur);
+    (ADJACENCIES[cur]||[]).forEach(n=>{if(!visited.has(n))queue.push([n,d+1]);});
+  }
+  return 99;
+}
+
 function onTerritoryClick(tid){
   const phase=gameState?.phase;
   const isMyTurn=gameState?.currentPlayer===myId;
@@ -865,16 +935,19 @@ function onTerritoryClick(tid){
   if(isMyTurn&&phase==='attack'){
     if(actionMode==='attack_tgt'){
       if(tid===actionSource){cancelAction();return;}
-      if(owner!==myId&&ADJACENCIES[actionSource]?.includes(tid)){
-        selectedTerritory=tid; renderMap(); renderSelectedPanel(); return;
-      } else if(owner===myId&&tState.soldiers>1){
+      // Rechoisir source si c'est mon territoire
+      if(owner===myId&&tState.soldiers>1){
         actionSource=tid; selectedTerritory=tid; renderMap(); renderSelectedPanel(); return;
+      }
+      // Attaquer n'importe quel territoire ennemi ou neutre
+      if(owner!==myId){
+        selectedTerritory=tid; renderMap(); renderSelectedPanel(); return;
       }
     } else {
       if(owner===myId&&tState.soldiers>1){
         actionMode='attack_tgt'; actionSource=tid; selectedTerritory=tid;
         renderMap(); renderSelectedPanel();
-        showToast('Cliquez sur un territoire ennemi adjacent.','info'); return;
+        showToast('Cliquez sur N\'IMPORTE QUEL territoire ennemi pour envoyer votre armée !','info'); return;
       }
     }
   }
@@ -895,7 +968,7 @@ function onTerritoryClick(tid){
   selectedTerritory=tid; renderMap(); renderSelectedPanel();
 }
 
-function setAttackSource(){actionMode='attack_tgt';actionSource=selectedTerritory;renderMap();renderSelectedPanel();showToast('Cliquez sur un territoire ennemi adjacent.','info');}
+function setAttackSource(){actionMode='attack_tgt';actionSource=selectedTerritory;renderMap();renderSelectedPanel();showToast('Cliquez sur n\'importe quel territoire ennemi.','info');}
 function setMoveSource(){actionMode='move_tgt';actionSource=selectedTerritory;renderMap();renderSelectedPanel();showToast('Cliquez sur une destination alliée.','info');}
 function cancelAction(){actionMode=null;actionSource=null;renderMap();renderSelectedPanel();}
 
@@ -908,7 +981,7 @@ function deploy(){
 }
 function launchAttack(){
   if(!actionSource||!selectedTerritory) return;
-  send({type:'attack',from:actionSource,to:selectedTerritory,amount:parseInt(document.getElementById('attackSlider').value)});
+  send({type:'launch_army',from:actionSource,to:selectedTerritory,amount:parseInt(document.getElementById('attackSlider').value)});
   cancelAction();
 }
 function launchMove(){
