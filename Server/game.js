@@ -418,10 +418,13 @@ class GameEngine {
     });
 
     // Armées visibles : les miennes + celles qui passent par mes territoires
+    // IMPORTANT : on exclut la destination du chemin — le défenseur ne voit PAS l'armée arriver
     const visibleArmies = this.marchingArmies.filter(army => {
       if (army.owner === playerId) return true;
-      // Visible si le chemin traverse un territoire visible
-      return army.path.some(tid => visible.has(tid));
+      // Visible uniquement si le chemin INTERMÉDIAIRE traverse un de mes territoires
+      // (on exclut le premier élément = source ennemie, et le dernier = ma destination)
+      const intermediaryPath = army.path.slice(1, -1);
+      return intermediaryPath.some(tid => this.territories[tid]?.owner === playerId);
     }).map(army => ({
       id: army.id,
       owner: army.owner,
