@@ -7,135 +7,146 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d12;
-    --surface: #13131e;
-    --surface2: #1a1a2e;
-    --border: #2a2a4a;
+    --bg: #0a0f1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #2a3a55;
     --gold: #c9a84c;
     --gold-light: #e8c97a;
     --red: #c0392b;
     --text: #d4c5a9;
     --text-dim: #6e6a5e;
     --shadow: 0 4px 24px rgba(0,0,0,0.6);
-    --ocean: #1a3a5c;
+    --ocean-deep: #0d2137;
+    --ocean-mid: #122d4a;
+    --ocean-light: #1a3f63;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Crimson Pro', serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
   /* LOBBY */
-  #lobby { display: flex; align-items: center; justify-content: center; height: 100vh; background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d0d12 70%); }
-  .lobby-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 48px; width: 440px; box-shadow: var(--shadow), 0 0 80px rgba(201,168,76,0.08); text-align: center; }
-  .game-title { font-family: 'Cinzel', serif; font-size: 3rem; font-weight: 900; color: var(--gold); letter-spacing: 6px; text-shadow: 0 0 30px rgba(201,168,76,0.4); margin-bottom: 6px; }
-  .game-subtitle { font-style: italic; color: var(--text-dim); font-size: 1rem; margin-bottom: 36px; letter-spacing: 2px; }
+  #lobby { display: flex; align-items: center; justify-content: center; height: 100vh; background: radial-gradient(ellipse at 40% 50%, #1a2a4a 0%, #0a0f1a 70%); }
+  .lobby-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 48px; width: 440px; box-shadow: var(--shadow), 0 0 100px rgba(201,168,76,0.06); text-align: center; }
+  .game-title { font-family: 'Cinzel', serif; font-size: 3rem; font-weight: 900; color: var(--gold); letter-spacing: 8px; text-shadow: 0 0 40px rgba(201,168,76,0.5); margin-bottom: 4px; }
+  .game-subtitle { font-style: italic; color: var(--text-dim); font-size: 0.95rem; margin-bottom: 36px; letter-spacing: 3px; }
   .lobby-card input { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Crimson Pro', serif; font-size: 1rem; margin-bottom: 12px; outline: none; transition: border-color 0.2s; }
   .lobby-card input:focus { border-color: var(--gold); }
-  .btn { display: inline-block; padding: 12px 28px; background: linear-gradient(135deg, #8b6914, var(--gold)); color: #0d0d12; border: none; border-radius: 6px; font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; width: 100%; margin-top: 6px; }
-  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,0.3); }
-  .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
-  .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); margin-top: 0; }
-  .btn-outline:hover { background: rgba(201,168,76,0.1); }
-  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
-  #roomCode { font-family: 'Cinzel', serif; letter-spacing: 3px; text-align: center; font-size: 1.1rem; }
+  .btn { display: inline-block; padding: 12px 28px; background: linear-gradient(135deg, #7a5a10, var(--gold)); color: #0a0f1a; border: none; border-radius: 6px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; width: 100%; margin-top: 6px; }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.35); }
+  .btn:disabled { opacity: 0.35; cursor: default; transform: none; box-shadow: none; }
+  .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+  .btn-outline:hover { background: rgba(201,168,76,0.08); }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+  #roomCode { font-family: 'Cinzel', serif; letter-spacing: 4px; text-align: center; font-size: 1rem; }
 
   /* WAITING */
-  #waiting { display: none; align-items: center; justify-content: center; height: 100vh; background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d0d12 70%); }
-  .waiting-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; width: 500px; text-align: center; box-shadow: var(--shadow); }
-  .waiting-card h2 { font-family: 'Cinzel', serif; color: var(--gold); margin-bottom: 8px; letter-spacing: 3px; }
-  .link-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; font-size: 0.85rem; color: var(--gold); margin: 16px 0; word-break: break-all; cursor: pointer; font-family: 'Cinzel', serif; letter-spacing: 1px; }
+  #waiting { display: none; align-items: center; justify-content: center; height: 100vh; background: radial-gradient(ellipse at 40% 50%, #1a2a4a 0%, #0a0f1a 70%); }
+  .waiting-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; width: 520px; text-align: center; box-shadow: var(--shadow); }
+  .waiting-card h2 { font-family: 'Cinzel', serif; color: var(--gold); margin-bottom: 8px; letter-spacing: 4px; font-size: 1.3rem; }
+  .link-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; font-size: 0.8rem; color: var(--gold); margin: 16px 0; word-break: break-all; cursor: pointer; font-family: 'Cinzel', serif; letter-spacing: 1px; transition: background 0.2s; }
+  .link-box:hover { background: rgba(201,168,76,0.05); }
   #playerList { list-style: none; margin: 20px 0; text-align: left; }
-  #playerList li { padding: 10px 16px; border-radius: 6px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; background: var(--bg); }
-  .player-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  #playerList li { padding: 10px 16px; border-radius: 6px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; background: var(--bg); font-size: 0.9rem; }
+  .player-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 6px currentColor; }
 
   /* GAME */
   #game { display: none; flex: 1; overflow: hidden; }
-  .game-layout { display: grid; grid-template-columns: 260px 1fr 260px; grid-template-rows: 48px 1fr; height: 100vh; }
+  .game-layout { display: grid; grid-template-columns: 255px 1fr 255px; grid-template-rows: 46px 1fr; height: 100vh; }
 
   /* TOPBAR */
-  .topbar { grid-column: 1 / -1; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 16px; gap: 12px; }
-  .topbar-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1rem; letter-spacing: 3px; margin-right: auto; }
-  .phase-steps { display: flex; gap: 4px; }
-  .phase-step { padding: 3px 10px; border-radius: 10px; font-size: 0.6rem; font-family: 'Cinzel', serif; letter-spacing: 0.5px; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; }
-  .phase-step.active { background: rgba(201,168,76,0.15); color: var(--gold); border-color: var(--gold); }
-  .phase-step.done { color: #4a9; border-color: #2a6; background: rgba(42,170,100,0.1); }
-  .turn-info { font-size: 0.8rem; color: var(--text-dim); }
-  .event-badge { padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; background: rgba(192,57,43,0.2); border: 1px solid #c0392b; color: #e74c3c; }
+  .topbar { grid-column: 1 / -1; background: linear-gradient(to bottom, #0d1520, #111827); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 14px; gap: 10px; }
+  .topbar-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 0.95rem; letter-spacing: 4px; margin-right: auto; text-shadow: 0 0 15px rgba(201,168,76,0.3); }
+  .phase-steps { display: flex; gap: 3px; }
+  .phase-step { padding: 3px 9px; border-radius: 10px; font-size: 0.58rem; font-family: 'Cinzel', serif; letter-spacing: 0.5px; background: var(--surface2); color: var(--text-dim); border: 1px solid transparent; transition: all 0.3s; }
+  .phase-step.active { background: rgba(201,168,76,0.12); color: var(--gold); border-color: rgba(201,168,76,0.5); }
+  .phase-step.done { color: #4ab87a; border-color: rgba(74,184,122,0.4); background: rgba(74,184,122,0.08); }
+  .turn-info { font-size: 0.75rem; color: var(--text-dim); white-space: nowrap; }
+  .event-badge { padding: 3px 9px; border-radius: 10px; font-size: 0.65rem; background: rgba(192,57,43,0.18); border: 1px solid rgba(192,57,43,0.5); color: #e74c3c; }
 
   /* PANELS */
-  .left-panel { background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-  .right-panel { background: var(--surface); border-left: 1px solid var(--border); overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-  .panel-section { background: var(--bg); border-radius: 8px; padding: 12px; }
-  .panel-title { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .left-panel, .right-panel { background: var(--surface); overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .left-panel { border-right: 1px solid var(--border); }
+  .right-panel { border-left: 1px solid var(--border); }
+  .panel-section { background: var(--bg); border-radius: 8px; padding: 10px; border: 1px solid rgba(255,255,255,0.03); }
+  .panel-title { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; opacity: 0.9; }
 
-  .player-card { display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 6px; margin-bottom: 6px; background: var(--surface); border: 1px solid transparent; transition: border-color 0.2s; font-size: 0.85rem; }
-  .player-card.active { border-color: var(--gold); background: rgba(201,168,76,0.05); }
-  .player-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: #0d0d12; }
-  .player-name { flex: 1; font-size: 0.85rem; }
-  .player-stats { font-size: 0.7rem; color: var(--text-dim); }
+  .player-card { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 5px; margin-bottom: 5px; background: var(--surface); border: 1px solid transparent; transition: all 0.2s; }
+  .player-card.active { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.04); }
+  .player-avatar { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: bold; color: #0a0f1a; }
+  .player-name { flex: 1; font-size: 0.82rem; }
+  .player-stats { font-size: 0.67rem; color: var(--text-dim); }
 
   /* MAP */
-  .map-container { position: relative; overflow: hidden; background: var(--ocean); cursor: crosshair; }
+  .map-container { position: relative; overflow: hidden; background: var(--ocean-deep); }
   #worldMap { width: 100%; height: 100%; display: block; }
 
-  /* Territory styles */
-  .terr { cursor: pointer; transition: filter 0.15s, stroke-width 0.15s; stroke: #000; stroke-width: 0.8; stroke-linejoin: round; }
-  .terr:hover { filter: brightness(1.25); stroke-width: 1.5; }
-  .terr.selected { stroke: #fff !important; stroke-width: 2.5 !important; filter: brightness(1.4); }
-  .terr.atk-src { stroke: #ff4444 !important; stroke-width: 2.5 !important; animation: blink-red 0.8s infinite; }
-  .terr.atk-tgt { stroke: #ff4444 !important; stroke-width: 2px !important; filter: brightness(0.75); }
-  .terr.mov-src { stroke: #44aaff !important; stroke-width: 2.5 !important; animation: blink-blue 0.8s infinite; }
-  .terr.mov-tgt { stroke: #44aaff !important; stroke-width: 2px !important; }
-  .terr.hidden { fill: #0d1f35 !important; opacity: 0.5; cursor: default; }
+  /* Territory SVG styles */
+  .terr { cursor: pointer; transition: filter 0.12s; stroke-linejoin: round; stroke-linecap: round; }
+  .terr:hover { filter: brightness(1.3) saturate(1.2); }
+  .terr.selected { stroke: #ffffff !important; stroke-width: 2px !important; filter: brightness(1.5) saturate(1.3); }
+  .terr.atk-src { stroke: #ff3333 !important; stroke-width: 2px !important; animation: pulse-red 0.7s ease-in-out infinite; }
+  .terr.atk-tgt { stroke: #ff3333 !important; stroke-width: 1.5px !important; filter: brightness(0.7) saturate(0.8); }
+  .terr.mov-src { stroke: #33aaff !important; stroke-width: 2px !important; animation: pulse-blue 0.7s ease-in-out infinite; }
+  .terr.hidden { fill: #0a1628 !important; opacity: 0.4; cursor: default; }
+  .terr.hidden-attack { fill: #0d1e35 !important; opacity: 0.6; cursor: crosshair; }
 
-  @keyframes blink-red { 0%,100%{filter:brightness(1.2)} 50%{filter:brightness(1.7)} }
-  @keyframes blink-blue { 0%,100%{filter:brightness(1.2)} 50%{filter:brightness(1.7)} }
+  @keyframes pulse-red { 0%,100%{filter:brightness(1.3) drop-shadow(0 0 4px #ff3333)} 50%{filter:brightness(1.7) drop-shadow(0 0 8px #ff3333)} }
+  @keyframes pulse-blue { 0%,100%{filter:brightness(1.3) drop-shadow(0 0 4px #33aaff)} 50%{filter:brightness(1.7) drop-shadow(0 0 8px #33aaff)} }
 
-  .terr-label { font-family: 'Cinzel', serif; font-size: 3.5px; fill: rgba(0,0,0,0.85); text-anchor: middle; pointer-events: none; font-weight: 600; }
-  .terr-soldiers-bg { fill: rgba(0,0,0,0.7); }
-  .terr-soldiers { font-family: 'Cinzel', serif; font-size: 5px; fill: #fff; text-anchor: middle; pointer-events: none; font-weight: bold; }
+  .terr-label { font-family: 'Cinzel', serif; fill: rgba(0,0,0,0.9); text-anchor: middle; pointer-events: none; font-weight: 600; letter-spacing: 0.3px; }
+  .terr-soldiers-bg { pointer-events: none; }
+  .terr-soldiers { font-family: 'Cinzel', serif; fill: #fff; text-anchor: middle; pointer-events: none; font-weight: bold; }
+  .capital-dot { pointer-events: none; }
+  .capital-label { font-family: 'Crimson Pro', serif; fill: rgba(0,0,0,0.75); text-anchor: middle; pointer-events: none; font-style: italic; }
+  .mountain { pointer-events: none; opacity: 0.6; }
+  .ocean-label { font-family: 'Cinzel', serif; fill: rgba(255,255,255,0.07); text-anchor: middle; pointer-events: none; letter-spacing: 4px; font-weight: 900; }
+  .border-line { pointer-events: none; stroke: rgba(0,0,0,0.5); stroke-width: 0.8; fill: none; }
 
-  /* Continent labels */
-  .cont-label { font-family: 'Cinzel', serif; font-size: 7px; fill: rgba(255,255,255,0.12); text-anchor: middle; pointer-events: none; font-weight: 900; letter-spacing: 3px; }
+  /* Right panel actions */
+  .action-section { background: var(--bg); border-radius: 8px; padding: 10px; border: 1px solid rgba(255,255,255,0.03); }
+  .action-title { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
+  .terr-name-sel { font-family: 'Cinzel', serif; font-size: 0.88rem; color: var(--gold-light); margin-bottom: 3px; }
+  .terr-detail-sel { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 8px; }
+  .dist-info { font-size: 0.68rem; margin-bottom: 6px; padding: 4px 8px; background: rgba(192,57,43,0.12); border-radius: 4px; border-left: 2px solid #c0392b; line-height: 1.5; }
+  .slider-row { display: flex; align-items: center; gap: 8px; margin: 7px 0; }
+  .slider-row input[type=range] { flex: 1; accent-color: var(--gold); height: 3px; }
+  .slider-val { font-family: 'Cinzel', serif; font-size: 0.82rem; color: var(--gold); min-width: 26px; text-align: center; }
+  .btn-sm { padding: 7px 12px; font-size: 0.67rem; margin-top: 5px; letter-spacing: 1.5px; }
+  .btn-danger { background: linear-gradient(135deg, #6a1515, #c0392b); color: white; }
+  .btn-info { background: linear-gradient(135deg, #0d3a6a, #2471a3); color: white; }
 
-  /* Action panel */
-  .action-section { background: var(--bg); border-radius: 8px; padding: 12px; }
-  .action-title { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
-  .terr-name { font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--gold-light); }
-  .terr-detail { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px; }
-  .slider-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
-  .slider-row input[type=range] { flex: 1; accent-color: var(--gold); }
-  .slider-val { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--gold); min-width: 28px; text-align: center; }
-  .btn-sm { padding: 8px 14px; font-size: 0.7rem; margin-top: 6px; letter-spacing: 1.5px; }
-  .btn-danger { background: linear-gradient(135deg, #7a1f1f, var(--red)); color: white; }
-  .btn-info { background: linear-gradient(135deg, #1a4a7a, #2980b9); color: white; }
-
-  /* LOG */
-  #gameLog { background: var(--bg); border-radius: 8px; padding: 10px; flex: 1; overflow-y: auto; min-height: 100px; max-height: 180px; }
-  .log-entry { font-size: 0.72rem; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-dim); line-height: 1.4; }
+  /* Log */
+  #gameLog { background: var(--bg); border-radius: 6px; padding: 8px; flex: 1; overflow-y: auto; min-height: 90px; max-height: 170px; }
+  .log-entry { font-size: 0.68rem; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text-dim); line-height: 1.45; }
   .log-entry:last-child { color: var(--text); }
 
-  /* DIPLOMACY */
-  .diplo-section { background: var(--bg); border-radius: 8px; padding: 12px; }
-  .diplo-target select { width: 100%; padding: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Crimson Pro', serif; font-size: 0.85rem; margin-bottom: 6px; }
-  .diplo-msg { width: 100%; padding: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Crimson Pro', serif; font-size: 0.85rem; resize: none; height: 55px; margin-bottom: 6px; }
-  .diplo-gold { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 0.8rem; }
-  .diplo-gold input { width: 70px; padding: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--gold); font-size: 0.85rem; }
-  .msg-list { max-height: 130px; overflow-y: auto; margin-top: 8px; }
-  .msg-item { padding: 6px 8px; background: var(--surface); border-radius: 4px; margin-bottom: 4px; font-size: 0.72rem; }
-  .msg-from { color: var(--gold); font-size: 0.65rem; margin-bottom: 2px; }
+  /* Armies panel */
+  .army-item { padding: 5px 7px; background: var(--surface); border-radius: 4px; margin-bottom: 4px; border-left: 3px solid #888; font-size: 0.68rem; }
 
-  /* TOAST */
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 8px; font-family: 'Crimson Pro', serif; font-size: 0.9rem; z-index: 9999; animation: fadeInUp 0.3s ease; pointer-events: none; }
-  .toast.error { background: #7a1f1f; border: 1px solid #c0392b; color: white; }
-  .toast.info { background: #1a3a5a; border: 1px solid #2980b9; color: white; }
-  @keyframes fadeInUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  /* Diplomacy */
+  .diplo-section { background: var(--bg); border-radius: 8px; padding: 10px; }
+  .diplo-section select, .diplo-section textarea, .diplo-section input[type=number] { width: 100%; padding: 7px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Crimson Pro', serif; font-size: 0.82rem; margin-bottom: 5px; }
+  .diplo-section textarea { resize: none; height: 52px; }
+  .diplo-section input[type=number] { width: 72px; }
+  .diplo-gold { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; font-size: 0.75rem; }
+  .msg-list { max-height: 120px; overflow-y: auto; margin-top: 6px; }
+  .msg-item { padding: 5px 7px; background: var(--surface); border-radius: 4px; margin-bottom: 3px; font-size: 0.68rem; }
+  .msg-from { color: var(--gold); font-size: 0.62rem; margin-bottom: 2px; }
 
-  /* WINNER */
-  #winnerOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 999; align-items: center; justify-content: center; }
-  .winner-card { text-align: center; padding: 60px; }
-  .winner-title { font-family: 'Cinzel', serif; font-size: 3rem; color: var(--gold); text-shadow: 0 0 40px rgba(201,168,76,0.6); margin-bottom: 16px; }
-  .winner-name { font-family: 'Cinzel', serif; font-size: 2rem; color: white; }
+  /* Toast */
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 10px 22px; border-radius: 8px; font-family: 'Crimson Pro', serif; font-size: 0.88rem; z-index: 9999; animation: fadeUp 0.3s ease; pointer-events: none; max-width: 400px; text-align: center; }
+  .toast.error { background: #5a1010; border: 1px solid #c0392b; color: #ffaaaa; }
+  .toast.info { background: #0d2a45; border: 1px solid #2471a3; color: #aaddff; }
+  @keyframes fadeUp { from{opacity:0;transform:translateX(-50%) translateY(8px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
 
-  ::-webkit-scrollbar { width: 4px; }
+  /* Winner overlay */
+  #winnerOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 999; align-items: center; justify-content: center; }
+  .winner-card { text-align: center; }
+  .winner-trophy { font-size: 5rem; margin-bottom: 16px; }
+  .winner-title { font-family: 'Cinzel', serif; font-size: 2.5rem; color: var(--gold); text-shadow: 0 0 50px rgba(201,168,76,0.7); margin-bottom: 12px; letter-spacing: 4px; }
+  .winner-name { font-family: 'Cinzel', serif; font-size: 1.8rem; color: white; }
+
+  ::-webkit-scrollbar { width: 3px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 </style>
@@ -159,9 +170,9 @@
 <div id="waiting">
   <div class="waiting-card">
     <h2>SALLE D'ATTENTE</h2>
-    <p style="color:var(--text-dim);font-size:0.85rem;margin:8px 0">Partagez ce lien à vos alliés :</p>
+    <p style="color:var(--text-dim);font-size:0.82rem;margin:6px 0">Partagez ce lien à vos alliés :</p>
     <div class="link-box" id="shareLink" onclick="copyLink()">Chargement…</div>
-    <p style="font-size:0.75rem;color:var(--text-dim)">👆 Cliquez pour copier</p>
+    <p style="font-size:0.7rem;color:var(--text-dim)">👆 Cliquez pour copier</p>
     <ul id="playerList"></ul>
     <button class="btn" id="startBtn" onclick="startGame()" disabled>⚔️ Lancer la bataille (2 joueurs min)</button>
   </div>
@@ -171,10 +182,11 @@
 <div id="game">
   <div id="winnerOverlay">
     <div class="winner-card">
-      <div class="winner-title">🏆 VICTOIRE 🏆</div>
+      <div class="winner-trophy">🏆</div>
+      <div class="winner-title">VICTOIRE</div>
       <div class="winner-name" id="winnerName"></div>
-      <p style="color:var(--text-dim);margin-top:20px;font-style:italic">a conquis le monde entier</p>
-      <button class="btn" style="margin-top:30px;max-width:200px" onclick="location.reload()">Nouvelle partie</button>
+      <p style="color:var(--text-dim);margin-top:14px;font-style:italic;font-size:0.9rem">a conquis le monde entier</p>
+      <button class="btn" style="margin-top:28px;max-width:200px" onclick="location.reload()">Nouvelle partie</button>
     </div>
   </div>
 
@@ -187,11 +199,12 @@
         <div class="phase-step" id="ps-attack">⚔️ Attaque</div>
         <div class="phase-step" id="ps-movement">🚶 Mouvement</div>
       </div>
-      <div id="activeEvents" style="display:flex;gap:4px;"></div>
+      <div id="activeEvents" style="display:flex;gap:4px;flex-wrap:wrap;max-width:200px;"></div>
       <div class="turn-info" id="turnInfo">Tour 1</div>
-      <div style="color:var(--gold);font-size:0.8rem">💰 <span id="myGold">0</span> or</div>
+      <div style="color:var(--gold);font-size:0.75rem;white-space:nowrap;">💰 <span id="myGold">0</span> or</div>
     </div>
 
+    <!-- LEFT PANEL -->
     <div class="left-panel">
       <div class="panel-section">
         <div class="panel-title">⚔ Commandants</div>
@@ -205,66 +218,80 @@
 
     <!-- MAP -->
     <div class="map-container" id="mapContainer">
-      <svg id="worldMap" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <svg id="worldMap" viewBox="0 0 1009 665" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
-            <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="rgba(0,0,0,0.5)"/>
-          </filter>
           <!-- Ocean gradient -->
-          <radialGradient id="oceanGrad" cx="50%" cy="50%" r="70%">
-            <stop offset="0%" stop-color="#1e4a72"/>
-            <stop offset="100%" stop-color="#0a1f35"/>
+          <radialGradient id="oceanGrad" cx="45%" cy="55%" r="65%">
+            <stop offset="0%" stop-color="#163552"/>
+            <stop offset="60%" stop-color="#0e2438"/>
+            <stop offset="100%" stop-color="#080f1a"/>
           </radialGradient>
-          <!-- Latitude lines pattern -->
-          <pattern id="latLines" patternUnits="userSpaceOnUse" width="1000" height="50">
-            <line x1="0" y1="25" x2="1000" y2="25" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
-          </pattern>
+          <!-- Land base texture gradient -->
+          <linearGradient id="landShade" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.08)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,0.12)"/>
+          </linearGradient>
+          <!-- Glow filter for selected -->
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <!-- Mountain symbol -->
+          <symbol id="mtn" viewBox="0 0 10 8">
+            <polygon points="5,0 9,8 1,8" fill="currentColor" opacity="0.7"/>
+            <polygon points="5,1.5 8,8 2,8" fill="rgba(255,255,255,0.15)"/>
+          </symbol>
         </defs>
 
-        <!-- Ocean background -->
-        <rect width="1000" height="500" fill="url(#oceanGrad)"/>
-        <rect width="1000" height="500" fill="url(#latLines)" opacity="0.5"/>
+        <!-- Ocean -->
+        <rect width="1009" height="665" fill="url(#oceanGrad)"/>
 
+        <!-- Subtle latitude lines -->
+        <g stroke="rgba(255,255,255,0.025)" stroke-width="0.5" fill="none">
+          <line x1="0" y1="110" x2="1009" y2="110"/>
+          <line x1="0" y1="222" x2="1009" y2="222"/>
+          <line x1="0" y1="332" x2="1009" y2="332"/>
+          <line x1="0" y1="443" x2="1009" y2="443"/>
+          <line x1="0" y1="555" x2="1009" y2="555"/>
+        </g>
         <!-- Longitude lines -->
-        <g stroke="rgba(255,255,255,0.03)" stroke-width="0.5">
-          <line x1="100" y1="0" x2="100" y2="500"/>
-          <line x1="200" y1="0" x2="200" y2="500"/>
-          <line x1="300" y1="0" x2="300" y2="500"/>
-          <line x1="400" y1="0" x2="400" y2="500"/>
-          <line x1="500" y1="0" x2="500" y2="500"/>
-          <line x1="600" y1="0" x2="600" y2="500"/>
-          <line x1="700" y1="0" x2="700" y2="500"/>
-          <line x1="800" y1="0" x2="800" y2="500"/>
-          <line x1="900" y1="0" x2="900" y2="500"/>
+        <g stroke="rgba(255,255,255,0.015)" stroke-width="0.5" fill="none">
+          <line x1="126" y1="0" x2="126" y2="665"/>
+          <line x1="252" y1="0" x2="252" y2="665"/>
+          <line x1="378" y1="0" x2="378" y2="665"/>
+          <line x1="504" y1="0" x2="504" y2="665"/>
+          <line x1="630" y1="0" x2="630" y2="665"/>
+          <line x1="756" y1="0" x2="756" y2="665"/>
+          <line x1="882" y1="0" x2="882" y2="665"/>
         </g>
 
-        <!-- Continent background labels -->
-        <text class="cont-label" x="150" y="170">AMÉRIQUE DU NORD</text>
-        <text class="cont-label" x="210" y="340">AMÉRIQUE DU SUD</text>
-        <text class="cont-label" x="480" y="130">EUROPE</text>
-        <text class="cont-label" x="490" y="320">AFRIQUE</text>
-        <text class="cont-label" x="720" y="170">ASIE</text>
-        <text class="cont-label" x="820" y="390">OCÉANIE</text>
+        <!-- Ocean labels -->
+        <text class="ocean-label" x="80" y="420" font-size="11">PACIFIQUE</text>
+        <text class="ocean-label" x="220" y="480" font-size="9">ATLANTIQUE</text>
+        <text class="ocean-label" x="590" y="480" font-size="8">INDIEN</text>
+        <text class="ocean-label" x="504" y="55" font-size="8">ARCTIQUE</text>
 
-        <!-- Territory paths -->
-        <g id="territories" filter="url(#shadow)"></g>
+        <!-- Territories layer -->
+        <g id="territories"></g>
 
-        <!-- Adjacency lines layer (drawn on top of territories but below labels) -->
-        <g id="adjLines" opacity="0.0"></g>
+        <!-- Mountain decorations -->
+        <g id="mountains" class="mountain" pointer-events="none"></g>
 
-        <!-- Labels layer -->
+        <!-- Labels layer (above territories) -->
         <g id="terrLabels" pointer-events="none"></g>
       </svg>
     </div>
 
+    <!-- RIGHT PANEL -->
     <div class="right-panel">
+      <!-- Selected territory -->
       <div class="action-section" id="selectedPanel" style="display:none">
         <div class="action-title">🏔 Territoire</div>
-        <div class="terr-name" id="selName">—</div>
-        <div class="terr-detail" id="selDetail">—</div>
+        <div class="terr-name-sel" id="selName">—</div>
+        <div class="terr-detail-sel" id="selDetail">—</div>
 
         <div id="deployControls" style="display:none">
-          <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px">Renforts disponibles : <span id="deployLeft" style="color:var(--gold)">0</span></div>
+          <div style="font-size:0.7rem;color:var(--text-dim);margin-bottom:5px">Renforts : <span id="deployLeft" style="color:var(--gold);font-weight:bold">0</span> disponibles</div>
           <div class="slider-row">
             <input type="range" id="deploySlider" min="1" max="10" value="1" oninput="document.getElementById('deployVal').textContent=this.value">
             <span class="slider-val" id="deployVal">1</span>
@@ -273,26 +300,27 @@
         </div>
 
         <div id="attackControls" style="display:none">
-          <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:4px">Depuis : <span id="attackSourceName" style="color:#e74c3c">—</span></div>
-          <div id="attackDistInfo" style="font-size:0.72rem;margin-bottom:6px;padding:4px 8px;background:rgba(192,57,43,0.15);border-radius:4px;border-left:2px solid #c0392b;">
-            ⏱ <span id="attackDist">—</span> case(s) → arrivée dans <span id="attackTurns" style="color:#e74c3c;font-weight:bold">—</span> tour(s)
+          <div style="font-size:0.7rem;color:var(--text-dim);margin-bottom:3px">Depuis : <span id="attackSourceName" style="color:#e74c3c">—</span></div>
+          <div class="dist-info" id="attackDistInfo">
+            ⏱ Distance : <strong id="attackDist" style="color:#e74c3c">—</strong> case(s)<br>
+            🚶 Arrivée dans <strong id="attackTurns" style="color:#e74c3c">—</strong> tour(s)
           </div>
           <div class="slider-row">
             <input type="range" id="attackSlider" min="1" max="20" value="1" oninput="document.getElementById('attackVal').textContent=this.value">
             <span class="slider-val" id="attackVal">1</span>
           </div>
           <button class="btn btn-sm btn-danger" onclick="launchAttack()">⚔️ Envoyer l'armée !</button>
-          <button class="btn btn-sm btn-outline" onclick="cancelAction()" style="margin-top:4px">Annuler</button>
+          <button class="btn btn-sm btn-outline" onclick="cancelAction()" style="margin-top:4px">✕ Annuler</button>
         </div>
 
         <div id="moveControls" style="display:none">
-          <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px">Depuis : <span id="moveSourceName" style="color:#3498db">—</span></div>
+          <div style="font-size:0.7rem;color:var(--text-dim);margin-bottom:3px">Depuis : <span id="moveSourceName" style="color:#3498db">—</span></div>
           <div class="slider-row">
             <input type="range" id="moveSlider" min="1" max="20" value="1" oninput="document.getElementById('moveVal').textContent=this.value">
             <span class="slider-val" id="moveVal">1</span>
           </div>
           <button class="btn btn-sm btn-info" onclick="launchMove()">🚶 Déplacer</button>
-          <button class="btn btn-sm btn-outline" onclick="cancelAction()" style="margin-top:4px">Annuler</button>
+          <button class="btn btn-sm btn-outline" onclick="cancelAction()" style="margin-top:4px">✕ Annuler</button>
         </div>
 
         <div id="genericControls">
@@ -301,27 +329,27 @@
         </div>
       </div>
 
-      <!-- Armées en marche -->
+      <!-- Armies -->
       <div class="action-section" id="armiesPanel" style="display:none">
         <div class="action-title">🚶 Armées en marche</div>
         <div id="armiesList"></div>
       </div>
 
+      <!-- Phase -->
       <div class="action-section">
-        <div class="action-title">🎯 Phase actuelle</div>
-        <div id="phaseDesc" style="font-size:0.8rem;color:var(--text-dim);margin-bottom:10px;font-style:italic">—</div>
+        <div class="action-title">🎯 Phase</div>
+        <div id="phaseDesc" style="font-size:0.75rem;color:var(--text-dim);margin-bottom:8px;font-style:italic;line-height:1.4">—</div>
         <button class="btn btn-sm" id="nextPhaseBtn" onclick="nextPhase()">Phase suivante →</button>
       </div>
 
+      <!-- Diplomacy -->
       <div class="diplo-section" id="diploSection" style="display:none">
         <div class="action-title">🤝 Diplomatie</div>
-        <div class="diplo-target">
-          <select id="diploTarget"><option value="">Choisir un joueur…</option></select>
-        </div>
-        <textarea class="diplo-msg" id="diploMsg" placeholder="Message secret…"></textarea>
+        <select id="diploTarget"><option value="">Choisir un joueur…</option></select>
+        <textarea id="diploMsg" placeholder="Message secret…"></textarea>
         <div class="diplo-gold">
           <span>💰 Or :</span>
-          <input type="number" id="diploGold" value="0" min="0">
+          <input type="number" id="diploGold" value="0" min="0" style="width:70px">
         </div>
         <button class="btn btn-sm" onclick="sendDiplomacy()">📩 Envoyer</button>
         <div class="msg-list" id="msgList"></div>
@@ -331,241 +359,310 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════
-//  RISK-STYLE WORLD MAP — Territory SVG paths (viewBox 0 0 1000 500)
-//  Proper continent shapes inspired by classic Risk board game
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
+//  REALISTIC WORLD MAP DATA
+//  Paths basés sur des coordonnées géographiques réelles
+//  Projection de Mercator simplifiée dans un viewBox 1009x665
+//  Chaque territoire a un path SVG précis + position label + capitale
+// ═══════════════════════════════════════════════════════════════════════════
 
-const CONTINENT_BASE_COLORS = {
-  north_america: '#d4813a',
-  south_america: '#c8a820',
-  europe:        '#5b8fc9',
-  africa:        '#5aaa32',
-  asia:          '#9b5ec4',
-  oceania:       '#30a898',
+const CONTINENT_COLORS = {
+  north_america: '#c87840',
+  south_america: '#b8962a',
+  europe:        '#4a7eb5',
+  africa:        '#4a9632',
+  asia:          '#8848b8',
+  oceania:       '#2898a0',
 };
 
-// Each territory: path (SVG), label position (lx,ly), continent
+// Mountains positions [x, y] per territory (decorative)
+const MOUNTAIN_POS = {
+  alaska: [[58,95],[72,88]],
+  alberta: [[128,175],[115,188]],
+  western_us: [[105,235],[118,248]],
+  greenland: [[310,42],[328,55]],
+  peru: [[195,348],[182,362]],
+  argentina: [[215,438],[202,452]],
+  iceland: [[368,72]],
+  ukraine: [[522,118],[538,108]],
+  ural: [[588,95],[602,108]],
+  siberia: [[668,72],[685,85]],
+  afghanistan: [[615,198],[628,212]],
+  india: [[660,265],[648,278]],
+  china: [[728,208],[745,222],[715,235]],
+  mongolia: [[742,172],[758,185]],
+  middle_east: [[572,228],[558,215]],
+  north_africa: [[448,258],[462,245]],
+  east_africa: [[548,318]],
+  south_africa: [[498,398]],
+};
+
+// Capitals [name, x, y]
+const CAPITALS = {
+  alaska: ['Juneau', 62, 112],
+  northwest_territory: ['Yellowknife', 172, 105],
+  greenland: ['Nuuk', 315, 65],
+  alberta: ['Edmonton', 132, 178],
+  ontario: ['Ottawa', 215, 158],
+  quebec: ['Québec', 265, 148],
+  western_us: ['Denver', 118, 238],
+  eastern_us: ['Washington', 212, 228],
+  central_america: ['Mexico', 155, 278],
+  venezuela: ['Caracas', 225, 298],
+  peru: ['Lima', 192, 355],
+  brazil: ['Brasília', 268, 348],
+  argentina: ['Buenos Aires', 218, 448],
+  iceland: ['Reykjavik', 368, 82],
+  great_britain: ['Londres', 402, 128],
+  western_europe: ['Paris', 415, 178],
+  northern_europe: ['Berlin', 462, 118],
+  southern_europe: ['Rome', 468, 168],
+  ukraine: ['Kiev', 535, 128],
+  north_africa: ['Alger', 442, 258],
+  egypt: ['Le Caire', 528, 248],
+  west_africa: ['Dakar', 398, 308],
+  central_africa: ['Kinshasa', 488, 338],
+  east_africa: ['Nairobi', 548, 328],
+  south_africa: ['Pretoria', 495, 408],
+  ural: ['Iekaterinbourg', 598, 118],
+  siberia: ['Omsk', 672, 105],
+  yakutsk: ['Iakoutsk', 758, 82],
+  kamchatka: ['Petropavl.', 848, 98],
+  irkutsk: ['Irkoutsk', 735, 155],
+  mongolia: ['Oulan-Bator', 752, 188],
+  japan: ['Tokyo', 858, 178],
+  afghanistan: ['Kaboul', 622, 215],
+  china: ['Pékin', 748, 228],
+  middle_east: ['Riyad', 568, 248],
+  india: ['New Delhi', 652, 278],
+  siam: ['Bangkok', 748, 308],
+  indonesia: ['Jakarta', 768, 368],
+  new_guinea: ['Port Moresby', 858, 368],
+  western_australia: ['Perth', 798, 448],
+  eastern_australia: ['Sydney', 868, 448],
+};
+
+// Precise territory SVG paths (viewBox 1009x665, Mercator-inspired)
 const TERR_DATA = {
-  // ── NORTH AMERICA ──────────────────────────────────────────
+  // ══ NORTH AMERICA ══════════════════════════════════════════════════
   alaska: {
-    continent: 'north_america', lx: 52, ly: 78,
-    path: 'M 18,45 L 35,38 L 55,40 L 68,52 L 72,68 L 62,80 L 48,88 L 30,85 L 18,72 Z'
+    continent: 'north_america', lx: 62, ly: 100,
+    path: `M 15,62 L 28,48 L 48,44 L 68,52 L 82,44 L 95,52 L 105,48 L 118,58 L 125,72 L 132,68 L 145,75 L 148,88 L 138,98 L 128,92 L 118,102 L 105,108 L 92,118 L 78,122 L 62,118 L 48,125 L 38,118 L 28,108 L 18,95 Z`
   },
   northwest_territory: {
-    continent: 'north_america', lx: 135, ly: 68,
-    path: 'M 68,52 L 120,40 L 165,42 L 178,58 L 168,78 L 140,88 L 110,85 L 80,80 L 62,80 L 72,68 Z'
+    continent: 'north_america', lx: 168, ly: 95,
+    path: `M 125,48 L 178,38 L 215,42 L 238,55 L 248,72 L 242,88 L 228,98 L 208,105 L 188,108 L 168,105 L 148,108 L 138,98 L 148,88 L 145,75 L 132,68 L 125,72 L 118,58 L 118,48 Z`
   },
   greenland: {
-    continent: 'north_america', lx: 295, ly: 38,
-    path: 'M 220,15 L 270,8 L 330,12 L 355,28 L 345,55 L 310,68 L 265,65 L 232,48 Z'
+    continent: 'north_america', lx: 312, ly: 52,
+    path: `M 262,15 L 295,8 L 342,12 L 375,18 L 388,32 L 378,52 L 355,68 L 325,75 L 295,72 L 272,58 L 258,42 Z`
   },
   alberta: {
-    continent: 'north_america', lx: 118, ly: 108,
-    path: 'M 80,80 L 140,88 L 148,115 L 135,138 L 108,145 L 88,130 L 82,108 Z'
+    continent: 'north_america', lx: 130, ly: 158,
+    path: `M 105,108 L 168,105 L 178,125 L 172,148 L 158,168 L 138,178 L 118,175 L 102,162 L 98,142 Z`
   },
   ontario: {
-    continent: 'north_america', lx: 188, ly: 105,
-    path: 'M 140,88 L 168,78 L 195,82 L 218,95 L 215,122 L 195,138 L 168,142 L 148,130 L 148,115 Z'
+    continent: 'north_america', lx: 205, ly: 138,
+    path: `M 168,105 L 208,105 L 228,98 L 248,108 L 258,125 L 252,145 L 238,158 L 218,165 L 198,162 L 178,155 L 172,138 L 172,125 Z`
   },
   quebec: {
-    continent: 'north_america', lx: 255, ly: 100,
-    path: 'M 218,68 L 265,65 L 278,82 L 268,110 L 248,128 L 228,130 L 215,118 L 215,95 Z'
+    continent: 'north_america', lx: 268, ly: 128,
+    path: `M 248,72 L 278,68 L 308,72 L 325,82 L 322,102 L 308,118 L 288,128 L 265,132 L 248,128 L 238,115 L 238,102 L 238,88 Z`
   },
   western_us: {
-    continent: 'north_america', lx: 112, ly: 165,
-    path: 'M 88,130 L 135,138 L 148,165 L 142,192 L 115,200 L 88,195 L 78,168 Z'
+    continent: 'north_america', lx: 118, ly: 218,
+    path: `M 102,175 L 158,172 L 172,195 L 168,218 L 155,238 L 135,248 L 112,248 L 95,238 L 88,218 L 92,198 Z`
   },
   eastern_us: {
-    continent: 'north_america', lx: 188, ly: 162,
-    path: 'M 148,138 L 195,138 L 228,130 L 238,155 L 230,185 L 205,200 L 175,202 L 148,190 L 142,165 Z'
+    continent: 'north_america', lx: 208, ly: 215,
+    path: `M 158,172 L 198,168 L 228,168 L 252,178 L 258,198 L 252,222 L 238,238 L 218,248 L 198,248 L 175,242 L 162,228 L 158,208 L 158,192 Z`
   },
   central_america: {
-    continent: 'north_america', lx: 140, ly: 222,
-    path: 'M 115,200 L 175,202 L 178,225 L 162,245 L 140,248 L 120,235 L 112,218 Z'
+    continent: 'north_america', lx: 148, ly: 268,
+    path: `M 112,248 L 175,248 L 185,265 L 178,285 L 162,295 L 142,292 L 128,282 L 118,268 Z`
   },
 
-  // ── SOUTH AMERICA ──────────────────────────────────────────
+  // ══ SOUTH AMERICA ══════════════════════════════════════════════════
   venezuela: {
-    continent: 'south_america', lx: 200, ly: 268,
-    path: 'M 162,248 L 215,242 L 238,255 L 235,278 L 212,288 L 185,282 L 168,268 Z'
+    continent: 'south_america', lx: 222, ly: 288,
+    path: `M 178,288 L 218,282 L 248,285 L 262,298 L 258,315 L 242,325 L 218,328 L 198,322 L 182,308 Z`
   },
   peru: {
-    continent: 'south_america', lx: 175, ly: 322,
-    path: 'M 168,285 L 205,288 L 212,318 L 205,350 L 185,362 L 162,352 L 155,325 Z'
+    continent: 'south_america', lx: 188, ly: 345,
+    path: `M 178,322 L 212,318 L 232,332 L 235,358 L 225,378 L 205,388 L 185,382 L 168,368 L 162,348 L 165,332 Z`
   },
   brazil: {
-    continent: 'south_america', lx: 238, ly: 318,
-    path: 'M 212,285 L 262,270 L 290,280 L 298,318 L 285,355 L 258,368 L 228,360 L 205,348 L 212,318 Z'
+    continent: 'south_america', lx: 262, ly: 340,
+    path: `M 218,328 L 258,322 L 292,315 L 315,328 L 322,352 L 315,375 L 298,392 L 272,398 L 248,392 L 228,378 L 225,358 L 235,342 Z`
   },
   argentina: {
-    continent: 'south_america', lx: 205, ly: 395,
-    path: 'M 162,355 L 205,348 L 228,362 L 222,405 L 205,430 L 182,428 L 162,408 L 155,378 Z'
+    continent: 'south_america', lx: 208, ly: 438,
+    path: `M 168,392 L 208,388 L 232,395 L 242,418 L 238,448 L 225,472 L 205,485 L 185,478 L 168,462 L 158,438 L 158,415 Z`
   },
 
-  // ── EUROPE ─────────────────────────────────────────────────
+  // ══ EUROPE ══════════════════════════════════════════════════════════
   iceland: {
-    continent: 'europe', lx: 390, ly: 48,
-    path: 'M 368,28 L 408,22 L 422,38 L 412,55 L 388,58 L 372,45 Z'
+    continent: 'europe', lx: 368, ly: 72,
+    path: `M 348,55 L 375,50 L 392,58 L 395,72 L 382,82 L 362,85 L 348,75 Z`
   },
   great_britain: {
-    continent: 'europe', lx: 392, ly: 95,
-    path: 'M 378,68 L 402,65 L 415,80 L 410,105 L 392,112 L 375,102 L 372,85 Z'
+    continent: 'europe', lx: 398, ly: 118,
+    path: `M 382,98 L 405,95 L 418,108 L 415,125 L 402,135 L 388,132 L 378,118 Z`
   },
   western_europe: {
-    continent: 'europe', lx: 408, ly: 158,
-    path: 'M 388,118 L 422,115 L 438,135 L 432,165 L 412,178 L 392,170 L 382,148 Z'
+    continent: 'europe', lx: 412, ly: 168,
+    path: `M 388,138 L 428,135 L 445,152 L 442,175 L 428,192 L 408,198 L 392,188 L 382,172 L 385,155 Z`
   },
   northern_europe: {
-    continent: 'europe', lx: 455, ly: 90,
-    path: 'M 415,65 L 462,60 L 480,75 L 475,100 L 452,110 L 428,105 L 415,90 Z'
+    continent: 'europe', lx: 462, ly: 105,
+    path: `M 418,78 L 462,72 L 492,78 L 505,95 L 498,115 L 478,125 L 455,128 L 435,118 L 422,105 Z`
   },
   southern_europe: {
-    continent: 'europe', lx: 458, ly: 148,
-    path: 'M 428,112 L 475,105 L 498,118 L 495,148 L 475,165 L 450,168 L 432,158 L 428,135 Z'
+    continent: 'europe', lx: 468, ly: 162,
+    path: `M 435,128 L 478,125 L 508,128 L 522,145 L 518,168 L 502,182 L 478,188 L 458,182 L 445,168 L 445,148 Z`
   },
   ukraine: {
-    continent: 'europe', lx: 532, ly: 88,
-    path: 'M 480,62 L 545,58 L 568,72 L 562,102 L 535,115 L 505,112 L 480,100 L 475,78 Z'
+    continent: 'europe', lx: 535, ly: 112,
+    path: `M 498,78 L 548,72 L 578,82 L 588,98 L 582,118 L 562,132 L 538,138 L 515,132 L 502,118 L 498,102 Z`
   },
 
-  // ── AFRICA ─────────────────────────────────────────────────
+  // ══ AFRICA ══════════════════════════════════════════════════════════
   north_africa: {
-    continent: 'africa', lx: 445, ly: 228,
-    path: 'M 385,182 L 498,175 L 515,198 L 512,238 L 488,252 L 448,255 L 415,248 L 388,235 L 382,210 Z'
+    continent: 'africa', lx: 440, ly: 248,
+    path: `M 382,198 L 445,195 L 505,192 L 528,205 L 528,228 L 515,248 L 488,262 L 452,268 L 418,265 L 392,255 L 378,238 L 378,218 Z`
   },
   egypt: {
-    continent: 'africa', lx: 520, ly: 218,
-    path: 'M 498,178 L 540,175 L 558,192 L 555,228 L 532,242 L 512,238 L 515,198 Z'
+    continent: 'africa', lx: 528, ly: 235,
+    path: `M 505,195 L 542,192 L 562,205 L 562,228 L 548,248 L 528,255 L 512,248 L 505,232 Z`
   },
   west_africa: {
-    continent: 'africa', lx: 428, ly: 292,
-    path: 'M 388,258 L 448,258 L 455,285 L 445,318 L 418,328 L 395,315 L 382,288 Z'
+    continent: 'africa', lx: 398, ly: 302,
+    path: `M 378,268 L 448,265 L 462,282 L 458,308 L 442,325 L 415,332 L 392,322 L 375,305 Z`
   },
   central_africa: {
-    continent: 'africa', lx: 490, ly: 302,
-    path: 'M 448,258 L 512,242 L 530,258 L 528,295 L 508,318 L 478,325 L 455,315 L 448,285 Z'
+    continent: 'africa', lx: 490, ly: 325,
+    path: `M 448,268 L 515,255 L 542,268 L 548,295 L 538,322 L 515,338 L 488,342 L 462,332 L 458,308 L 462,285 Z`
   },
   east_africa: {
-    continent: 'africa', lx: 545, ly: 285,
-    path: 'M 532,242 L 568,238 L 582,258 L 578,295 L 558,315 L 530,308 L 525,278 Z'
+    continent: 'africa', lx: 548, ly: 310,
+    path: `M 548,252 L 575,248 L 592,265 L 588,292 L 578,318 L 558,332 L 538,328 L 525,312 L 528,288 Z`
   },
   south_africa: {
-    continent: 'africa', lx: 492, ly: 365,
-    path: 'M 455,318 L 508,318 L 532,312 L 538,348 L 518,382 L 488,388 L 462,375 L 448,348 Z'
+    continent: 'africa', lx: 495, ly: 398,
+    path: `M 462,338 L 515,338 L 542,345 L 555,368 L 548,398 L 528,418 L 502,425 L 475,418 L 458,398 L 452,372 Z`
   },
 
-  // ── ASIA ───────────────────────────────────────────────────
+  // ══ ASIA ════════════════════════════════════════════════════════════
   ural: {
-    continent: 'asia', lx: 608, ly: 88,
-    path: 'M 568,50 L 625,45 L 642,62 L 638,95 L 612,112 L 585,108 L 568,92 L 565,68 Z'
+    continent: 'asia', lx: 598, ly: 105,
+    path: `M 582,62 L 628,58 L 648,72 L 645,95 L 632,115 L 608,125 L 585,118 L 572,102 L 575,82 Z`
   },
   siberia: {
-    continent: 'asia', lx: 688, ly: 72,
-    path: 'M 638,38 L 710,32 L 738,48 L 732,82 L 705,98 L 672,95 L 645,80 L 642,55 Z'
+    continent: 'asia', lx: 672, ly: 88,
+    path: `M 645,48 L 702,42 L 738,52 L 745,72 L 732,92 L 705,108 L 672,112 L 645,105 L 635,88 L 638,68 Z`
   },
   yakutsk: {
-    continent: 'asia', lx: 768, ly: 52,
-    path: 'M 738,25 L 800,22 L 822,38 L 818,65 L 792,78 L 762,72 L 742,58 L 738,38 Z'
+    continent: 'asia', lx: 758, ly: 65,
+    path: `M 738,28 L 788,22 L 822,32 L 832,52 L 822,72 L 798,82 L 768,85 L 745,75 L 738,58 Z`
   },
   kamchatka: {
-    continent: 'asia', lx: 852, ly: 65,
-    path: 'M 822,38 L 870,32 L 895,48 L 892,80 L 868,95 L 840,88 L 820,72 L 818,50 Z'
+    continent: 'asia', lx: 848, ly: 82,
+    path: `M 822,32 L 862,28 L 892,42 L 898,65 L 888,88 L 865,102 L 838,105 L 818,92 L 815,68 Z`
   },
   irkutsk: {
-    continent: 'asia', lx: 748, ly: 112,
-    path: 'M 705,98 L 762,95 L 792,112 L 788,142 L 762,155 L 732,148 L 712,132 L 708,110 Z'
+    continent: 'asia', lx: 732, ly: 138,
+    path: `M 705,108 L 745,105 L 775,115 L 782,138 L 772,158 L 748,168 L 722,165 L 705,148 L 702,128 Z`
   },
   mongolia: {
-    continent: 'asia', lx: 762, ly: 165,
-    path: 'M 732,148 L 792,145 L 825,158 L 820,185 L 792,198 L 758,195 L 735,178 Z'
+    continent: 'asia', lx: 752, ly: 178,
+    path: `M 722,158 L 775,158 L 812,165 L 822,185 L 812,205 L 785,215 L 755,212 L 732,202 L 722,185 Z`
   },
   japan: {
-    continent: 'asia', lx: 875, ly: 138,
-    path: 'M 862,115 L 892,108 L 908,125 L 905,155 L 882,165 L 862,152 L 855,135 Z'
+    continent: 'asia', lx: 858, ly: 168,
+    path: `M 842,145 L 872,138 L 892,152 L 892,175 L 878,188 L 858,192 L 842,178 Z`
   },
   afghanistan: {
-    continent: 'asia', lx: 622, ly: 152,
-    path: 'M 568,125 L 625,115 L 655,128 L 658,162 L 635,178 L 605,175 L 578,162 L 568,142 Z'
+    continent: 'asia', lx: 622, ly: 205,
+    path: `M 572,165 L 622,158 L 658,165 L 672,185 L 665,208 L 645,222 L 618,228 L 592,218 L 572,202 Z`
   },
   china: {
-    continent: 'asia', lx: 752, ly: 210,
-    path: 'M 655,175 L 732,162 L 792,198 L 798,232 L 775,255 L 735,262 L 698,248 L 668,228 L 655,198 Z'
+    continent: 'asia', lx: 748, ly: 218,
+    path: `M 665,185 L 722,178 L 758,185 L 788,202 L 802,225 L 795,252 L 772,268 L 742,272 L 712,262 L 685,242 L 668,218 L 662,198 Z`
   },
   middle_east: {
-    continent: 'asia', lx: 575, ly: 215,
-    path: 'M 540,178 L 580,168 L 608,178 L 625,205 L 618,238 L 592,252 L 562,245 L 545,222 Z'
+    continent: 'asia', lx: 568, ly: 238,
+    path: `M 542,195 L 578,188 L 612,195 L 628,215 L 622,242 L 605,258 L 578,265 L 555,255 L 542,238 Z`
   },
   india: {
-    continent: 'asia', lx: 660, ly: 245,
-    path: 'M 628,205 L 668,195 L 698,215 L 702,252 L 685,280 L 658,288 L 635,272 L 625,248 Z'
+    continent: 'asia', lx: 648, ly: 268,
+    path: `M 625,228 L 668,218 L 698,232 L 708,258 L 702,285 L 685,305 L 658,312 L 635,302 L 618,282 L 618,258 Z`
   },
   siam: {
-    continent: 'asia', lx: 748, ly: 275,
-    path: 'M 700,252 L 748,248 L 775,262 L 778,292 L 758,308 L 728,305 L 705,288 L 698,268 Z'
+    continent: 'asia', lx: 748, ly: 295,
+    path: `M 708,262 L 748,255 L 778,262 L 792,282 L 788,308 L 768,322 L 742,322 L 718,312 L 708,292 Z`
   },
 
-  // ── OCEANIA ────────────────────────────────────────────────
+  // ══ OCEANIA ══════════════════════════════════════════════════════════
   indonesia: {
-    continent: 'oceania', lx: 762, ly: 338,
-    path: 'M 730,318 L 785,312 L 808,328 L 805,355 L 778,365 L 750,358 L 732,342 Z'
+    continent: 'oceania', lx: 768, ly: 358,
+    path: `M 748,338 L 798,332 L 822,345 L 822,368 L 805,382 L 778,385 L 752,378 L 738,362 Z`
   },
   new_guinea: {
-    continent: 'oceania', lx: 848, ly: 335,
-    path: 'M 812,318 L 868,315 L 888,330 L 885,355 L 860,365 L 832,358 L 815,342 Z'
+    continent: 'oceania', lx: 858, ly: 355,
+    path: `M 828,335 L 878,328 L 905,342 L 908,362 L 892,378 L 865,382 L 838,375 L 825,358 Z`
   },
   western_australia: {
-    continent: 'oceania', lx: 790, ly: 400,
-    path: 'M 748,368 L 812,365 L 828,388 L 822,422 L 795,438 L 765,432 L 748,410 Z'
+    continent: 'oceania', lx: 798, ly: 435,
+    path: `M 758,398 L 822,392 L 848,408 L 852,438 L 838,462 L 812,472 L 782,468 L 758,452 L 748,428 Z`
   },
   eastern_australia: {
-    continent: 'oceania', lx: 868, ly: 400,
-    path: 'M 832,368 L 888,365 L 912,385 L 908,422 L 882,440 L 852,435 L 832,415 L 828,388 Z'
+    continent: 'oceania', lx: 868, ly: 435,
+    path: `M 852,392 L 908,385 L 938,402 L 942,432 L 928,462 L 902,475 L 872,472 L 848,455 L 845,428 L 845,408 Z`
   },
 };
 
 const ADJACENCIES = {
-  alaska: ['northwest_territory','alberta','kamchatka'],
-  northwest_territory: ['alaska','alberta','ontario','greenland'],
-  greenland: ['northwest_territory','ontario','quebec','iceland'],
-  alberta: ['alaska','northwest_territory','ontario','western_us'],
-  ontario: ['northwest_territory','alberta','greenland','quebec','western_us','eastern_us'],
-  quebec: ['ontario','greenland','eastern_us'],
-  western_us: ['alberta','ontario','eastern_us','central_america'],
-  eastern_us: ['ontario','quebec','western_us','central_america'],
-  central_america: ['western_us','eastern_us','venezuela'],
-  venezuela: ['central_america','peru','brazil'],
-  peru: ['venezuela','brazil','argentina'],
-  brazil: ['venezuela','peru','argentina','north_africa'],
-  argentina: ['peru','brazil'],
-  iceland: ['greenland','great_britain','northern_europe'],
-  great_britain: ['iceland','western_europe','northern_europe'],
-  western_europe: ['great_britain','northern_europe','southern_europe','north_africa'],
-  northern_europe: ['great_britain','iceland','western_europe','southern_europe','ukraine'],
-  southern_europe: ['western_europe','northern_europe','ukraine','north_africa','egypt','middle_east'],
-  ukraine: ['northern_europe','southern_europe','ural','afghanistan','middle_east'],
-  north_africa: ['western_europe','southern_europe','brazil','egypt','east_africa','central_africa','west_africa'],
-  egypt: ['north_africa','southern_europe','middle_east','east_africa'],
-  east_africa: ['egypt','north_africa','central_africa','south_africa','middle_east'],
-  central_africa: ['north_africa','east_africa','west_africa','south_africa'],
-  west_africa: ['north_africa','central_africa'],
-  south_africa: ['east_africa','central_africa'],
-  ural: ['ukraine','siberia','afghanistan','china'],
-  siberia: ['ural','yakutsk','irkutsk','mongolia','china'],
-  yakutsk: ['siberia','kamchatka','irkutsk'],
-  kamchatka: ['alaska','yakutsk','irkutsk','mongolia','japan'],
-  irkutsk: ['siberia','yakutsk','kamchatka','mongolia'],
-  mongolia: ['siberia','irkutsk','kamchatka','china','japan'],
-  japan: ['kamchatka','mongolia'],
-  afghanistan: ['ukraine','ural','china','india','middle_east'],
-  china: ['ural','siberia','mongolia','afghanistan','india','siam'],
-  middle_east: ['ukraine','southern_europe','egypt','east_africa','afghanistan','india'],
-  india: ['middle_east','afghanistan','china','siam'],
-  siam: ['india','china','indonesia'],
-  indonesia: ['siam','new_guinea','western_australia'],
-  new_guinea: ['indonesia','western_australia','eastern_australia'],
-  western_australia: ['indonesia','new_guinea','eastern_australia'],
-  eastern_australia: ['new_guinea','western_australia'],
+  alaska:['northwest_territory','alberta','kamchatka'],
+  northwest_territory:['alaska','alberta','ontario','greenland'],
+  greenland:['northwest_territory','ontario','quebec','iceland'],
+  alberta:['alaska','northwest_territory','ontario','western_us'],
+  ontario:['northwest_territory','alberta','greenland','quebec','western_us','eastern_us'],
+  quebec:['ontario','greenland','eastern_us'],
+  western_us:['alberta','ontario','eastern_us','central_america'],
+  eastern_us:['ontario','quebec','western_us','central_america'],
+  central_america:['western_us','eastern_us','venezuela'],
+  venezuela:['central_america','peru','brazil'],
+  peru:['venezuela','brazil','argentina'],
+  brazil:['venezuela','peru','argentina','north_africa'],
+  argentina:['peru','brazil'],
+  iceland:['greenland','great_britain','northern_europe'],
+  great_britain:['iceland','western_europe','northern_europe'],
+  western_europe:['great_britain','northern_europe','southern_europe','north_africa'],
+  northern_europe:['great_britain','iceland','western_europe','southern_europe','ukraine'],
+  southern_europe:['western_europe','northern_europe','ukraine','north_africa','egypt','middle_east'],
+  ukraine:['northern_europe','southern_europe','ural','afghanistan','middle_east'],
+  north_africa:['western_europe','southern_europe','brazil','egypt','east_africa','central_africa','west_africa'],
+  egypt:['north_africa','southern_europe','middle_east','east_africa'],
+  east_africa:['egypt','north_africa','central_africa','south_africa','middle_east'],
+  central_africa:['north_africa','east_africa','west_africa','south_africa'],
+  west_africa:['north_africa','central_africa'],
+  south_africa:['east_africa','central_africa'],
+  ural:['ukraine','siberia','afghanistan','china'],
+  siberia:['ural','yakutsk','irkutsk','mongolia','china'],
+  yakutsk:['siberia','kamchatka','irkutsk'],
+  kamchatka:['alaska','yakutsk','irkutsk','mongolia','japan'],
+  irkutsk:['siberia','yakutsk','kamchatka','mongolia'],
+  mongolia:['siberia','irkutsk','kamchatka','china','japan'],
+  japan:['kamchatka','mongolia'],
+  afghanistan:['ukraine','ural','china','india','middle_east'],
+  china:['ural','siberia','mongolia','afghanistan','india','siam'],
+  middle_east:['ukraine','southern_europe','egypt','east_africa','afghanistan','india'],
+  india:['middle_east','afghanistan','china','siam'],
+  siam:['india','china','indonesia'],
+  indonesia:['siam','new_guinea','western_australia'],
+  new_guinea:['indonesia','western_australia','eastern_australia'],
+  western_australia:['indonesia','new_guinea','eastern_australia'],
+  eastern_australia:['new_guinea','western_australia'],
 };
 
 const TERR_NAMES = {
@@ -584,25 +681,22 @@ const TERR_NAMES = {
   western_australia:'Aus. Ouest', eastern_australia:'Aus. Est',
 };
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
 //  GAME STATE
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
 let ws=null, myId=null, myName='', roomId=null, gameState=null;
 let selectedTerritory=null, actionMode=null, actionSource=null;
 
-// ═══════════════════════════════════════════════════════════════════
-//  CONNECTION
-// ═══════════════════════════════════════════════════════════════════
+// ── CONNECTION ───────────────────────────────────────────────────────────────
 function connect(cb){
   const proto=location.protocol==='https:'?'wss:':'ws:';
   ws=new WebSocket(`${proto}//${location.host}`);
   ws.onopen=cb;
   ws.onmessage=e=>handleMessage(JSON.parse(e.data));
-  ws.onerror=()=>showToast('Erreur de connexion.','error');
-  ws.onclose=()=>showToast('Déconnecté.','error');
+  ws.onerror=()=>showToast('Erreur de connexion au serveur.','error');
+  ws.onclose=()=>showToast('Déconnecté du serveur.','error');
 }
 function send(d){ws.send(JSON.stringify(d));}
-
 function createRoom(){
   myName=document.getElementById('playerName').value.trim()||'Commandant';
   connect(()=>send({type:'join',name:myName}));
@@ -613,15 +707,10 @@ function joinRoom(){
   myName=document.getElementById('playerName').value.trim()||'Commandant';
   connect(()=>send({type:'join',roomId:code,name:myName}));
 }
-function copyLink(){
-  navigator.clipboard.writeText(document.getElementById('shareLink').textContent)
-    .then(()=>showToast('Lien copié !','info'));
-}
+function copyLink(){navigator.clipboard.writeText(document.getElementById('shareLink').textContent).then(()=>showToast('Lien copié !','info'));}
 function startGame(){send({type:'start'});}
 
-// ═══════════════════════════════════════════════════════════════════
-//  MESSAGE HANDLER
-// ═══════════════════════════════════════════════════════════════════
+// ── MESSAGE HANDLER ──────────────────────────────────────────────────────────
 function handleMessage(msg){
   if(msg.type==='joined'){
     myId=msg.playerId; roomId=msg.roomId;
@@ -644,25 +733,22 @@ function handleMessage(msg){
   if(msg.type==='error') showToast(msg.message,'error');
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  RENDER
-// ═══════════════════════════════════════════════════════════════════
+// ── RENDER ───────────────────────────────────────────────────────────────────
 function renderState(){
   if(!gameState) return;
   renderWaitingPlayers();
   if(gameState.phase==='lobby') return;
   renderMap();
-  renderArmiesOnMap();
   renderPlayerCards();
   renderPhaseUI();
   renderLog();
   renderDiplomacy();
+  renderArmies();
   document.getElementById('myGold').textContent=gameState.myGold||0;
   const cp=gameState.players[gameState.currentPlayer];
   document.getElementById('turnInfo').textContent=`Tour ${gameState.turn} — ${cp?.name||'?'}`;
   const evDiv=document.getElementById('activeEvents');
   evDiv.innerHTML=(gameState.activeEvents||[]).map(e=>`<span class="event-badge">${e.name}</span>`).join('');
-  renderArmies();
 }
 
 function renderWaitingPlayers(){
@@ -681,7 +767,11 @@ function renderWaitingPlayers(){
 function renderMap(){
   const terrG=document.getElementById('territories');
   const labG=document.getElementById('terrLabels');
-  terrG.innerHTML=''; labG.innerHTML='';
+  const mtnG=document.getElementById('mountains');
+  terrG.innerHTML=''; labG.innerHTML=''; mtnG.innerHTML='';
+
+  const isMyTurn=gameState?.currentPlayer===myId;
+  const phase=gameState?.phase;
 
   Object.keys(TERR_DATA).forEach(tid=>{
     const td=TERR_DATA[tid];
@@ -691,67 +781,135 @@ function renderMap(){
     const hidden=tState.hidden;
     const ownerData=owner?gameState.players?.[owner]:null;
 
-    // Base color
-    let fill;
-    if(hidden) fill='#0d1f35';
-    else if(ownerData) fill=ownerData.color;
-    else fill=CONTINENT_BASE_COLORS[td.continent]||'#555';
-
-    // Darken base color for unowned territories
-    const opacity = ownerData ? 0.9 : (hidden ? 0.3 : 0.65);
+    // Color
+    let fill, opacity;
+    if(hidden){fill='#0a1628';opacity=0.35;}
+    else if(ownerData){fill=ownerData.color;opacity=0.88;}
+    else{fill=CONTINENT_COLORS[td.continent]||'#555';opacity=0.62;}
 
     const path=document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('d', td.path);
-    path.setAttribute('class','terr'+(hidden?' hidden':''));
-    path.setAttribute('fill', fill);
-    path.setAttribute('fill-opacity', opacity);
-    path.setAttribute('stroke', hidden?'#0a1f35':'rgba(0,0,0,0.6)');
+    path.setAttribute('d',td.path);
+    path.setAttribute('fill',fill);
+    path.setAttribute('fill-opacity',opacity);
+    path.setAttribute('stroke','rgba(0,0,0,0.55)');
     path.setAttribute('stroke-width','1');
-    path.setAttribute('data-id', tid);
+    path.setAttribute('data-id',tid);
 
-    // Action/selection classes
+    let cls='terr';
+    if(hidden){
+      if(isMyTurn&&phase==='attack'&&actionMode==='attack_tgt') cls+=' hidden-attack';
+      else cls+=' hidden';
+    }
+    path.setAttribute('class',cls);
+
     if(selectedTerritory===tid) path.classList.add('selected');
     if(actionSource===tid&&actionMode==='attack_tgt') path.classList.add('atk-src');
     if(actionSource===tid&&actionMode==='move_tgt') path.classList.add('mov-src');
 
-    // Territoires cachés cliquables en phase d'attaque (attaque à l'aveugle)
-    const isMyTurn = gameState?.currentPlayer === myId;
-    const phase = gameState?.phase;
+    // Land texture overlay
+    const overlay=document.createElementNS('http://www.w3.org/2000/svg','path');
+    overlay.setAttribute('d',td.path);
+    overlay.setAttribute('fill','url(#landShade)');
+    overlay.setAttribute('pointer-events','none');
+
     if(!hidden){
       path.addEventListener('click',()=>onTerritoryClick(tid));
-    } else if(isMyTurn && phase==='attack' && actionMode==='attack_tgt') {
-      // Territoire caché mais cliquable pour attaque à l'aveugle
+    } else if(isMyTurn&&phase==='attack'&&actionMode==='attack_tgt'){
       path.style.cursor='crosshair';
-      path.style.opacity='0.5';
       path.addEventListener('click',()=>onTerritoryClick(tid));
     }
-    terrG.appendChild(path);
 
+    terrG.appendChild(path);
+    if(!hidden) terrG.appendChild(overlay);
+
+    // ── Labels ──
     if(!hidden){
       // Territory name
       const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
-      txt.setAttribute('x', td.lx); txt.setAttribute('y', td.ly);
+      txt.setAttribute('x',td.lx); txt.setAttribute('y',td.ly);
       txt.setAttribute('class','terr-label');
+      txt.setAttribute('font-size','5');
       txt.textContent=TERR_NAMES[tid]||tid;
       labG.appendChild(txt);
 
-      // Soldier badge
+      // Capital dot + name
+      const cap=CAPITALS[tid];
+      if(cap){
+        const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+        dot.setAttribute('cx',cap[1]); dot.setAttribute('cy',cap[2]);
+        dot.setAttribute('r','1.5');
+        dot.setAttribute('fill','rgba(0,0,0,0.7)');
+        dot.setAttribute('class','capital-dot');
+        labG.appendChild(dot);
+
+        const capTxt=document.createElementNS('http://www.w3.org/2000/svg','text');
+        capTxt.setAttribute('x',cap[1]); capTxt.setAttribute('y',cap[2]-3);
+        capTxt.setAttribute('class','capital-label');
+        capTxt.setAttribute('font-size','3.5');
+        capTxt.textContent=cap[0];
+        labG.appendChild(capTxt);
+      }
+
+      // Soldiers badge
       if(soldiers>0){
-        const cx=td.lx; const cy=td.ly+10;
+        const bx=td.lx, by=td.ly+10;
         const bg=document.createElementNS('http://www.w3.org/2000/svg','circle');
-        bg.setAttribute('cx',cx); bg.setAttribute('cy',cy); bg.setAttribute('r','8');
-        bg.setAttribute('fill','rgba(0,0,0,0.72)');
-        bg.setAttribute('stroke', ownerData?ownerData.color:'#888');
-        bg.setAttribute('stroke-width','1.5');
+        bg.setAttribute('cx',bx); bg.setAttribute('cy',by); bg.setAttribute('r','9');
+        bg.setAttribute('fill','rgba(0,0,0,0.75)');
+        bg.setAttribute('stroke',ownerData?ownerData.color:'#666');
+        bg.setAttribute('stroke-width','1.8');
+        bg.setAttribute('class','terr-soldiers-bg');
         labG.appendChild(bg);
 
         const st=document.createElementNS('http://www.w3.org/2000/svg','text');
-        st.setAttribute('x',cx); st.setAttribute('y',cy+3.5);
+        st.setAttribute('x',bx); st.setAttribute('y',by+4);
         st.setAttribute('class','terr-soldiers');
+        st.setAttribute('font-size','7');
         st.textContent=soldiers;
         labG.appendChild(st);
       }
     }
+  });
+
+  // ── Mountains ──
+  Object.keys(MOUNTAIN_POS).forEach(tid=>{
+    const tState=gameState.territories?.[tid]||{};
+    if(tState.hidden) return;
+    MOUNTAIN_POS[tid].forEach(([mx,my])=>{
+      const ownerData=tState.owner?gameState.players?.[tState.owner]:null;
+      const color=ownerData?'rgba(0,0,0,0.5)':'rgba(80,80,80,0.5)';
+      const tri=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      tri.setAttribute('points',`${mx},${my-6} ${mx+5},${my+2} ${mx-5},${my+2}`);
+      tri.setAttribute('fill',color);
+      tri.setAttribute('class','mountain');
+      const tri2=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      tri2.setAttribute('points',`${mx},${my-4} ${mx+3},${my+2} ${mx},${my+1}`);
+      tri2.setAttribute('fill','rgba(255,255,255,0.2)');
+      tri2.setAttribute('class','mountain');
+      mtnG.appendChild(tri); mtnG.appendChild(tri2);
+    });
+  });
+
+  // ── Marching armies on map ──
+  (gameState?.marchingArmies||[]).forEach(a=>{
+    const destMeta=TERR_DATA[a.to];
+    if(!destMeta) return;
+    const owner=gameState.players[a.owner];
+    const color=owner?.color||'#fff';
+    const cx=destMeta.lx+12, cy=destMeta.ly-5;
+
+    const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx',cx); circle.setAttribute('cy',cy); circle.setAttribute('r','6');
+    circle.setAttribute('fill',color); circle.setAttribute('opacity','0.9');
+    circle.setAttribute('stroke','rgba(0,0,0,0.5)'); circle.setAttribute('stroke-width','0.8');
+
+    const icon=document.createElementNS('http://www.w3.org/2000/svg','text');
+    icon.setAttribute('x',cx); icon.setAttribute('y',cy+2);
+    icon.setAttribute('font-size','5'); icon.setAttribute('text-anchor','middle');
+    icon.setAttribute('fill','rgba(0,0,0,0.8)'); icon.setAttribute('pointer-events','none');
+    icon.textContent='⚔';
+
+    labG.appendChild(circle); labG.appendChild(icon);
   });
 }
 
@@ -759,34 +917,30 @@ function renderPlayerCards(){
   const div=document.getElementById('playerCards');
   if(!div||!gameState?.players) return;
   const counts={};
-  Object.values(gameState.territories||{}).forEach(t=>{if(t.owner) counts[t.owner]=(counts[t.owner]||0)+1;});
+  Object.values(gameState.territories||{}).forEach(t=>{if(t.owner)counts[t.owner]=(counts[t.owner]||0)+1;});
   div.innerHTML=(gameState.playerOrder||[]).map(pid=>{
-    const p=gameState.players[pid];
-    if(!p) return '';
-    const isActive=pid===gameState.currentPlayer;
-    const isMe=pid===myId;
-    return `<div class="player-card${isActive?' active':''}${isMe?' me':''}">
-      <div class="player-avatar" style="background:${p.color}">${p.name[0]}</div>
+    const p=gameState.players[pid]; if(!p) return '';
+    const isActive=pid===gameState.currentPlayer, isMe=pid===myId;
+    return `<div class="player-card${isActive?' active':''}">
+      <div class="player-avatar" style="background:${p.color};box-shadow:0 0 8px ${p.color}40">${p.name[0]}</div>
       <div><div class="player-name">${p.name}${isMe?' ★':''}${isActive?' ⚔':''}</div>
-      <div class="player-stats">🏔 ${counts[pid]||0} terr. · 💰 ${p.gold||0} or</div></div>
+      <div class="player-stats">🏔 ${counts[pid]||0} · 💰 ${p.gold||0}${!p.connected?' · hors ligne':''}</div></div>
     </div>`;
   }).join('');
 }
 
 const PHASE_DESC={
-  deployment:'Cliquez sur un territoire allié pour y placer des renforts.',
+  deployment:'Sélectionnez un territoire allié pour y placer des renforts.',
   diplomacy:'Envoyez des messages secrets et de l\'or à vos alliés.',
-  attack:'Cliquez sur votre territoire → puis sur un ennemi adjacent.',
-  movement:'Déplacez vos troupes entre vos territoires connectés.',
-  production:'Production en cours…', gameover:'Fin de partie.',
+  attack:'Cliquez sur votre territoire → puis sur n\'importe quelle cible, même dans le brouillard !',
+  movement:'Déplacez vos soldats entre vos territoires connectés (max 3 sauts).',
+  production:'Production en cours…',gameover:'Partie terminée.',
 };
 
 function renderPhaseUI(){
-  const phase=gameState.phase;
-  const isMyTurn=gameState.currentPlayer===myId;
+  const phase=gameState.phase, isMyTurn=gameState.currentPlayer===myId;
   ['deployment','diplomacy','attack','movement'].forEach(p=>{
-    const el=document.getElementById(`ps-${p}`);
-    if(!el) return;
+    const el=document.getElementById(`ps-${p}`); if(!el) return;
     const phases=['deployment','diplomacy','attack','movement'];
     const pi=phases.indexOf(phase), ti=phases.indexOf(p);
     el.className='phase-step'+(phase===p?' active':(ti<pi?' done':''));
@@ -800,19 +954,15 @@ function renderPhaseUI(){
 
 function renderSelectedPanel(){
   const panel=document.getElementById('selectedPanel');
-  const phase=gameState.phase;
-  const isMyTurn=gameState.currentPlayer===myId;
+  const phase=gameState.phase, isMyTurn=gameState.currentPlayer===myId;
   if(!selectedTerritory){panel.style.display='none';return;}
   panel.style.display='block';
   const tState=gameState.territories?.[selectedTerritory]||{};
-  const owner=tState.owner;
-  const ownerData=owner?gameState.players?.[owner]:null;
+  const owner=tState.owner, ownerData=owner?gameState.players?.[owner]:null;
   document.getElementById('selName').textContent=TERR_NAMES[selectedTerritory]||selectedTerritory;
-  document.getElementById('selDetail').textContent= tState.hidden
-    ? '🌫️ Territoire inconnu (attaque à l\'aveugle)'
-    : owner
-      ? `${ownerData?.name||'?'} · ${tState.soldiers||0} soldats`
-      : `Neutre · ${tState.soldiers||0} soldats`;
+  document.getElementById('selDetail').textContent=tState.hidden
+    ?'🌫️ Territoire inconnu — attaque à l\'aveugle'
+    :owner?`${ownerData?.name||'?'} · ${tState.soldiers||0} soldats`:`Neutre · ${tState.soldiers||0} soldats`;
 
   const dc=document.getElementById('deployControls');
   const ac=document.getElementById('attackControls');
@@ -833,9 +983,9 @@ function renderSelectedPanel(){
     if(actionMode==='attack_tgt'&&actionSource&&(owner!==myId||tState.hidden)){
       ac.style.display='block';
       document.getElementById('attackSourceName').textContent=TERR_NAMES[actionSource]||actionSource;
-      const dist=getDistanceClient(actionSource, selectedTerritory);
+      const dist=getDistanceClient(actionSource,selectedTerritory);
       document.getElementById('attackDist').textContent=dist;
-      document.getElementById('attackTurns').textContent=dist===0?'immédiat (adjacent)':dist;
+      document.getElementById('attackTurns').textContent=dist===0?'immédiat':dist;
       const myT=gameState.territories?.[actionSource]?.soldiers||1;
       document.getElementById('attackSlider').max=Math.max(1,myT-1);
       document.getElementById('attackSlider').value=Math.max(1,myT-1);
@@ -858,6 +1008,12 @@ function renderSelectedPanel(){
   }
 }
 
+function renderLog(){
+  const d=document.getElementById('gameLog'); if(!d||!gameState?.log) return;
+  d.innerHTML=gameState.log.map(l=>`<div class="log-entry">${l}</div>`).join('');
+  d.scrollTop=d.scrollHeight;
+}
+
 function renderArmies(){
   const armies=gameState?.marchingArmies||[];
   const panel=document.getElementById('armiesPanel');
@@ -866,69 +1022,30 @@ function renderArmies(){
   panel.style.display='block';
   list.innerHTML=armies.map(a=>{
     const owner=gameState.players[a.owner];
-    const dest=TERR_NAMES[a.to]||a.to;
-    const src=TERR_NAMES[a.from]||a.from;
+    const dest=TERR_NAMES[a.to]||a.to, src=TERR_NAMES[a.from]||a.from;
     const color=owner?.color||'#888';
-    const ismine=a.owner===myId;
-    return `<div style="padding:6px 8px;background:var(--surface);border-radius:4px;margin-bottom:4px;border-left:3px solid ${color};font-size:0.72rem;">
-      <div style="color:${color};font-weight:bold;margin-bottom:2px;">${ismine?'⚔️ Ma':'🚶'} armée — ${owner?.name||'?'}</div>
-      <div style="color:var(--text-dim);">${src} → <strong style="color:var(--text)">${dest}</strong></div>
-      <div style="color:var(--gold);margin-top:2px;">🪖 ${a.soldiers} soldats · ⏱ ${a.turnsLeft} tour(s) avant arrivée</div>
+    return `<div class="army-item" style="border-left-color:${color}">
+      <div style="color:${color};font-weight:bold">${a.owner===myId?'⚔️ Mon':'🚶'} armée — ${owner?.name||'?'}</div>
+      <div style="color:var(--text-dim)">${src} → <strong style="color:var(--text)">${dest}</strong></div>
+      <div style="color:var(--gold)">🪖 ${a.soldiers} · ⏱ ${a.turnsLeft} tour(s)</div>
     </div>`;
   }).join('');
 }
 
-function renderArmiesOnMap(){
-  // Dessine des icônes d'armées en marche sur la carte
-  const labG=document.getElementById('terrLabels');
-  (gameState?.marchingArmies||[]).forEach(a=>{
-    const destMeta=TERR_DATA[a.to];
-    if(!destMeta) return;
-    const owner=gameState.players[a.owner];
-    const color=owner?.color||'#fff';
-    // Petite icône flèche près de la destination
-    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
-    const cx=destMeta.lx+8, cy=destMeta.ly-2;
-    const bg=document.createElementNS('http://www.w3.org/2000/svg','circle');
-    bg.setAttribute('cx',cx); bg.setAttribute('cy',cy); bg.setAttribute('r','5');
-    bg.setAttribute('fill',color); bg.setAttribute('opacity','0.85');
-    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x',cx); t.setAttribute('y',cy+1.5);
-    t.setAttribute('font-size','4'); t.setAttribute('text-anchor','middle');
-    t.setAttribute('fill','#000'); t.setAttribute('pointer-events','none');
-    t.textContent='✈';
-    g.appendChild(bg); g.appendChild(t);
-    labG.appendChild(g);
-  });
-}
-
-function renderLog(){
-  const d=document.getElementById('gameLog');
-  if(!d||!gameState?.log) return;
-  d.innerHTML=gameState.log.map(l=>`<div class="log-entry">${l}</div>`).join('');
-  d.scrollTop=d.scrollHeight;
-}
-
 function renderDiplomacy(){
-  const sel=document.getElementById('diploTarget');
-  if(!sel||!gameState?.players) return;
-  sel.innerHTML='<option value="">Choisir…</option>'+
-    Object.values(gameState.players).filter(p=>p.id!==myId)
-      .map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  const sel=document.getElementById('diploTarget'); if(!sel||!gameState?.players) return;
+  sel.innerHTML='<option value="">Choisir…</option>'+Object.values(gameState.players)
+    .filter(p=>p.id!==myId).map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
   const ml=document.getElementById('msgList');
   if(!gameState.myMessages?.length){ml.innerHTML='';return;}
   ml.innerHTML=gameState.myMessages.slice(-10).reverse().map(m=>{
-    const from=gameState.players[m.from]?.name||'?';
-    const to=gameState.players[m.to]?.name||'?';
+    const from=gameState.players[m.from]?.name||'?', to=gameState.players[m.to]?.name||'?';
     return `<div class="msg-item"><div class="msg-from">${m.from===myId?'→ '+to:'← '+from}</div>${m.message}</div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  TERRITORY CLICK
-// ═══════════════════════════════════════════════════════════════════
-// Distance BFS côté client
-function getDistanceClient(fromId, toId) {
+// ── TERRITORY CLICK ──────────────────────────────────────────────────────────
+function getDistanceClient(fromId,toId){
   if(fromId===toId) return 0;
   const visited=new Set(), queue=[[fromId,0]];
   while(queue.length){
@@ -942,54 +1059,46 @@ function getDistanceClient(fromId, toId) {
 }
 
 function onTerritoryClick(tid){
-  const phase=gameState?.phase;
-  const isMyTurn=gameState?.currentPlayer===myId;
-  const tState=gameState?.territories?.[tid]||{};
-  const owner=tState.owner;
+  const phase=gameState?.phase, isMyTurn=gameState?.currentPlayer===myId;
+  const tState=gameState?.territories?.[tid]||{}, owner=tState.owner;
 
   if(isMyTurn&&phase==='attack'){
     if(actionMode==='attack_tgt'){
       if(tid===actionSource){cancelAction();return;}
-      // Rechoisir source si c'est mon territoire
-      if(owner===myId&&tState.soldiers>1){
-        actionSource=tid; selectedTerritory=tid; renderMap(); renderSelectedPanel(); return;
+      if(owner===myId&&tState.soldiers>1&&!tState.hidden){
+        actionSource=tid;selectedTerritory=tid;renderMap();renderSelectedPanel();return;
       }
-      // Attaquer n'importe quel territoire ennemi, neutre ou même caché (à l'aveugle !)
-      if(owner!==myId || tState.hidden){
-        selectedTerritory=tid; renderMap(); renderSelectedPanel(); return;
+      if(owner!==myId||tState.hidden){
+        selectedTerritory=tid;renderMap();renderSelectedPanel();return;
       }
     } else {
       if(owner===myId&&tState.soldiers>1){
-        actionMode='attack_tgt'; actionSource=tid; selectedTerritory=tid;
-        renderMap(); renderSelectedPanel();
-        showToast('Cliquez sur N\'IMPORTE QUEL territoire — même dans le brouillard !','info'); return;
+        actionMode='attack_tgt';actionSource=tid;selectedTerritory=tid;
+        renderMap();renderSelectedPanel();
+        showToast('Cliquez sur n\'importe quelle cible — même dans le brouillard !','info');return;
       }
     }
   }
-
   if(isMyTurn&&phase==='movement'){
     if(actionMode==='move_tgt'){
       if(tid===actionSource){cancelAction();return;}
-      if(owner===myId){selectedTerritory=tid; renderMap(); renderSelectedPanel(); return;}
+      if(owner===myId){selectedTerritory=tid;renderMap();renderSelectedPanel();return;}
     } else {
       if(owner===myId&&tState.soldiers>1){
-        actionMode='move_tgt'; actionSource=tid; selectedTerritory=tid;
-        renderMap(); renderSelectedPanel();
-        showToast('Cliquez sur un territoire allié de destination.','info'); return;
+        actionMode='move_tgt';actionSource=tid;selectedTerritory=tid;
+        renderMap();renderSelectedPanel();
+        showToast('Cliquez sur un territoire allié de destination.','info');return;
       }
     }
   }
-
-  selectedTerritory=tid; renderMap(); renderSelectedPanel();
+  selectedTerritory=tid;renderMap();renderSelectedPanel();
 }
 
-function setAttackSource(){actionMode='attack_tgt';actionSource=selectedTerritory;renderMap();renderSelectedPanel();showToast('Cliquez sur n\'importe quel territoire ennemi.','info');}
+function setAttackSource(){actionMode='attack_tgt';actionSource=selectedTerritory;renderMap();renderSelectedPanel();showToast('Cliquez sur n\'importe quelle cible.','info');}
 function setMoveSource(){actionMode='move_tgt';actionSource=selectedTerritory;renderMap();renderSelectedPanel();showToast('Cliquez sur une destination alliée.','info');}
 function cancelAction(){actionMode=null;actionSource=null;renderMap();renderSelectedPanel();}
 
-// ═══════════════════════════════════════════════════════════════════
-//  ACTIONS
-// ═══════════════════════════════════════════════════════════════════
+// ── ACTIONS ──────────────────────────────────────────────────────────────────
 function deploy(){
   if(!selectedTerritory) return;
   send({type:'deploy',territory:selectedTerritory,amount:parseInt(document.getElementById('deploySlider').value)});
@@ -1016,9 +1125,7 @@ function sendDiplomacy(){
 }
 function nextPhase(){send({type:'next_phase'});cancelAction();}
 
-// ═══════════════════════════════════════════════════════════════════
-//  UTILS
-// ═══════════════════════════════════════════════════════════════════
+// ── UTILS ────────────────────────────────────────────────────────────────────
 function showToast(msg,type='info'){
   const ex=document.querySelector('.toast');if(ex)ex.remove();
   const el=document.createElement('div');
@@ -1026,11 +1133,9 @@ function showToast(msg,type='info'){
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),3500);
 }
-
 window.addEventListener('load',()=>{
-  const params=new URLSearchParams(location.search);
-  const room=params.get('room');
-  if(room){document.getElementById('roomCode').value=room;showToast(`Code: ${room} — Entrez votre nom et rejoignez !`,'info');}
+  const r=new URLSearchParams(location.search).get('room');
+  if(r){document.getElementById('roomCode').value=r;showToast(`Salle : ${r} — Entrez votre nom et rejoignez !`,'info');}
 });
 </script>
 </body>
