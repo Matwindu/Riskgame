@@ -712,10 +712,19 @@ function renderMap(){
     // Action/selection classes
     if(selectedTerritory===tid) path.classList.add('selected');
     if(actionSource===tid&&actionMode==='attack_tgt') path.classList.add('atk-src');
-    if(actionMode==='attack_tgt'&&ADJACENCIES[actionSource]?.includes(tid)&&owner!==myId&&!hidden) path.classList.add('atk-tgt');
     if(actionSource===tid&&actionMode==='move_tgt') path.classList.add('mov-src');
 
-    if(!hidden) path.addEventListener('click',()=>onTerritoryClick(tid));
+    // Territoires cachés cliquables en phase d'attaque (attaque à l'aveugle)
+    const isMyTurn = gameState?.currentPlayer === myId;
+    const phase = gameState?.phase;
+    if(!hidden){
+      path.addEventListener('click',()=>onTerritoryClick(tid));
+    } else if(isMyTurn && phase==='attack' && actionMode==='attack_tgt') {
+      // Territoire caché mais cliquable pour attaque à l'aveugle
+      path.style.cursor='crosshair';
+      path.style.opacity='0.5';
+      path.addEventListener('click',()=>onTerritoryClick(tid));
+    }
     terrG.appendChild(path);
 
     if(!hidden){
@@ -799,7 +808,11 @@ function renderSelectedPanel(){
   const owner=tState.owner;
   const ownerData=owner?gameState.players?.[owner]:null;
   document.getElementById('selName').textContent=TERR_NAMES[selectedTerritory]||selectedTerritory;
-  document.getElementById('selDetail').textContent=owner?`${ownerData?.name||'?'} · ${tState.soldiers||0} soldats`:`Neutre · ${tState.soldiers||0} soldats`;
+  document.getElementById('selDetail').textContent= tState.hidden
+    ? '🌫️ Territoire inconnu (attaque à l\'aveugle)'
+    : owner
+      ? `${ownerData?.name||'?'} · ${tState.soldiers||0} soldats`
+      : `Neutre · ${tState.soldiers||0} soldats`;
 
   const dc=document.getElementById('deployControls');
   const ac=document.getElementById('attackControls');
@@ -817,7 +830,7 @@ function renderSelectedPanel(){
     document.getElementById('deployVal').textContent=1;
   }
   if(isMyTurn&&phase==='attack'){
-    if(actionMode==='attack_tgt'&&actionSource&&owner!==myId){
+    if(actionMode==='attack_tgt'&&actionSource&&(owner!==myId||tState.hidden)){
       ac.style.display='block';
       document.getElementById('attackSourceName').textContent=TERR_NAMES[actionSource]||actionSource;
       const dist=getDistanceClient(actionSource, selectedTerritory);
@@ -941,15 +954,15 @@ function onTerritoryClick(tid){
       if(owner===myId&&tState.soldiers>1){
         actionSource=tid; selectedTerritory=tid; renderMap(); renderSelectedPanel(); return;
       }
-      // Attaquer n'importe quel territoire ennemi ou neutre
-      if(owner!==myId){
+      // Attaquer n'importe quel territoire ennemi, neutre ou même caché (à l'aveugle !)
+      if(owner!==myId || tState.hidden){
         selectedTerritory=tid; renderMap(); renderSelectedPanel(); return;
       }
     } else {
       if(owner===myId&&tState.soldiers>1){
         actionMode='attack_tgt'; actionSource=tid; selectedTerritory=tid;
         renderMap(); renderSelectedPanel();
-        showToast('Cliquez sur N\'IMPORTE QUEL territoire ennemi pour envoyer votre armée !','info'); return;
+        showToast('Cliquez sur N\'IMPORTE QUEL territoire — même dans le brouillard !','info'); return;
       }
     }
   }
