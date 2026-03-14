@@ -888,6 +888,8 @@ function renderArmiesOnMap(){
     labG.appendChild(g);
   });
 }
+
+function renderLog(){
   const d=document.getElementById('gameLog');
   if(!d||!gameState?.log) return;
   d.innerHTML=gameState.log.map(l=>`<div class="log-entry">${l}</div>`).join('');
